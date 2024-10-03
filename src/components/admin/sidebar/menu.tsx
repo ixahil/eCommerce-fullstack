@@ -7,26 +7,29 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { MenuList } from "@/config/adminSite";
+import { LogOut } from "lucide-react";
+import { CollapseMenuButton } from "./collapse-menu-button";
+import { ItemIndicator } from "@radix-ui/react-dropdown-menu";
 
 type isOpen = boolean | undefined;
 
 interface MenuProps {
-  isOpen: isOpen
+  isOpen: isOpen;
 }
 
 interface MenuGroupProps {
-  item: MenuList
-  isOpen: isOpen
+  item: MenuList;
+  isOpen: isOpen;
 }
 
-type MenuItemProps = {item: MenuList["menus"], isOpen: isOpen }
+type MenuItemProps = { item: MenuList["menus"]; isOpen: isOpen };
 
 const Menu = ({ isOpen }: MenuProps) => {
   const pathname = usePathname();
   const menuList = adminSiteConfig.getMenuList(pathname);
 
   return (
-    <ScrollArea>
+    <ScrollArea className="[&>div>div[style]]:!block">
       <nav className="mt-8 h-full w-full">
         <ul className="flex flex-col items-start space-y-1 px-2">
           {menuList.map((menuGroup, index) => (
@@ -44,19 +47,17 @@ const MenuGroup = ({ item, isOpen }: MenuGroupProps) => {
       <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
         {item.groupLabel}
       </p>
-      {
-        item.menus.map((menuItem)=>(
-
-          <MenuItem item={menuItem} isOpen={isOpen} key={menuItem.label}/>
-        ))
-      }
+      {item.menus.map((menuItem) => (
+        <MenuItem item={menuItem} isOpen={isOpen} key={menuItem.label} />
+      ))}
     </li>
   );
 };
 
 const MenuItem = ({ item, isOpen }: MenuItemProps) => {
-  const { icon: Icon, active, href, label } = item;
-  return (
+  const { icon: Icon, active, href, label, submenus } = item;
+
+  return !submenus || submenus.length === 0 ? (
     <Button
       variant={active ? "secondary" : "ghost"}
       className="w-full justify-start h-10 mb-1"
@@ -78,6 +79,17 @@ const MenuItem = ({ item, isOpen }: MenuItemProps) => {
         </p>
       </Link>
     </Button>
+  ) : (
+    <div className="w-full" key={label}>
+      <CollapseMenuButton
+        icon={Icon}
+        label={label}
+        href={href}
+        active={active}
+        submenus={submenus}
+        isOpen={isOpen}
+      />
+    </div>
   );
 };
 
