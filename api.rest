@@ -1,0 +1,78 @@
+@host = http://localhost:8000/api/v1
+
+POST {{host}}/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "123",
+    "email": "admin@admin.com"
+}
+
+###
+
+POST {{host}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "123"
+}
+
+### CREATE PRODUCT
+POST {{host}}/products
+Content-Type: application/json
+
+{
+  "name": "Product 1",
+  "sku": "sku123",
+  "collections": [
+   {"name": "Electronics", "handle": "electronics"},
+   {"name": "Gadgets", "handle": "gadgets"}
+  ],
+  "brand": {"name":"Kira", "handle":"kira"},
+  "price": 10,
+  "salePrice": 10,
+  "stock": 1,
+  "isFeatured": false,
+  "isFreeShipping": false,
+  "isVisible": true,
+  "status": "ACTIVE"
+  }
+
+### UPDATE PRODUCT
+POST {{host}}/products/670005202588632d6bc36d80
+Content-Type: application/json
+
+{
+  "name": "Product 1",
+  "sku": "sku123",
+  "collections": [
+   {"name": "Electronics", "handle": "electronics"},
+   {"name": "Gadgets", "handle": "gadgets"}
+  ],
+  "brand": {"name":"Kira", "handle":"kira"},
+  "price": 10,
+  "salePrice": 10,
+  "stock": 1,
+  "isFeatured": false,
+  "isFreeShipping": false,
+  "isVisible": true,
+  "status": "ACTIVE"
+  }
+
+
+### GET PRODUCTS
+GET {{host}}/products
+Content-Type: application/json
+
+
+###
+GET {{host}}/collections
+
+###
+GET {{host}}/brands
+
+
+###
+GET {{host}}/products/66ee9bfc8e48cc9fae1bd1b0
