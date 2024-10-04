@@ -8,6 +8,9 @@ const nextConfig = {
       {
         hostname: "api-ecommerce.sahildev.pro",
       },
+      {
+        hostname: "res.cloudinary.com",
+      },
     ],
   },
 };

@@ -29,9 +29,9 @@ const Menu = ({ isOpen }: MenuProps) => {
   const menuList = adminSiteConfig.getMenuList(pathname);
 
   return (
-    <ScrollArea className="[&>div>div[style]]:!block">
+    <ScrollArea className="[&>div>div[style]]:!block grow">
       <nav className="mt-8 h-full w-full">
-        <ul className="flex flex-col items-start space-y-1 px-2">
+        <ul className="flex flex-col items-start space-y-1 px-2 h-full">
           {menuList.map((menuGroup, index) => (
             <MenuGroup item={menuGroup} key={index} isOpen={isOpen} />
           ))}

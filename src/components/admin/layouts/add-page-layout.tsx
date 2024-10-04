@@ -9,7 +9,7 @@ type Props = {
 
 const AddPageLayout = ({ children, title, pathname }: Props) => {
   return (
-    <div className="space-y-4 px-8">
+    <div className="space-y-4 px-16 pb-8">
       <BreadCrumbCustom pathname={pathname} />
       <h2 className="text-xl font-medium">{title}</h2>
       {children}

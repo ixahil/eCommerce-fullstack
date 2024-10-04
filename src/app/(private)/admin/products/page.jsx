@@ -1,12 +1,14 @@
+"use client";
 import PageLayout from "@/components/admin/layouts/page-layout";
 import { DataTable } from "@/components/shared/data-table";
-import React from "react";
-import { columns, products } from "./columns";
+import React, { Suspense } from "react";
+import { columns } from "./columns";
+import { useGetProductsQuery } from "@/store/api/product-api";
+import { Skeleton } from "@/components/ui/skeleton";
+import LoadingSkeleton from "@/components/shared/skeleton/loading-skeleton";
 
-const AdminProductList = async () => {
-  const response = await fetch(process.env.NEXT_PUBLIC_API + "api/v1/products");
-
-  const { data } = await response.json();
+const AdminProductList = () => {
+  const { data, isLoading } = useGetProductsQuery();
 
   return (
     <PageLayout
@@ -15,7 +17,11 @@ const AdminProductList = async () => {
       pathname="/products"
       button={{ label: "Add Product", href: "products/new" }}
     >
-      <DataTable data={data?.products} columns={columns} />
+      {isLoading ? (
+        <LoadingSkeleton />
+      ) : (
+        <DataTable data={data?.data || []} columns={columns} />
+      )}
     </PageLayout>
   );
 };

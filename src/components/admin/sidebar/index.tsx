@@ -4,6 +4,7 @@ import { LogOut, PanelsTopLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SidebarToggle } from "./sidebar-toggle";
 import Link from "next/link";
+import { adminSiteConfig } from "@/config/adminSite";
 
 const Sidebar = () => {
   const isOpen = true;
@@ -12,7 +13,7 @@ const Sidebar = () => {
   return (
     <aside
       className={cn(
-        "bg-zinc-50 fixed top-0 left-0 z-20 h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
+        "bg-dashboard-bg fixed top-0 left-0 z-20 h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300",
         !isOpen ? "w-[90px]" : "w-64"
       )}
     >
@@ -54,12 +55,12 @@ const Sidebar = () => {
                   : "translate-x-0 opacity-100"
               )}
             >
-              Brand
+              {adminSiteConfig.logo}
             </h1>
           </Link>
         </Button>
         <Menu isOpen={isOpen} />
-        <div className="w-full grow flex items-end">
+        <div className="w-full flex items-end">
           <Button variant="outline" className="w-full justify-center h-10 mt-5">
             <span className={cn(!isOpen ? "" : "mr-4")}>
               <LogOut size={18} />

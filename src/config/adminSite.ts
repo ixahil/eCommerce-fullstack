@@ -114,6 +114,7 @@ const getMenuList = (pathname: string) => {
 
 export const adminSiteConfig = {
   logo: "SahilDev.pro",
+  logoImage: "",
   developer: "Sahil Shaikh",
   name: "Sahil Dev - Personal Portfolio",
   keywords: [

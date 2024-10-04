@@ -2,14 +2,23 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { RowAction } from "./actions";
 import Image from "next/image";
+import Badges from "@/components/ui/badges";
+
+export type Collection = {
+  _id: string;
+  name: string;
+  handle: string;
+  description: string | null;
+  products: [string];
+};
 
 export type Product = {
   _id: string;
   name: string;
   sku: string;
   description: string;
-  collections: {};
-  brand: {};
+  collections: Collection[];
+  brand: Collection;
   price: number;
   stock: number;
   mainImage: {
@@ -21,11 +30,11 @@ export type Product = {
 
 export const columns: ColumnDef<Product>[] = [
   {
-    accessorKey: "mainImage",
+    accessorKey: "thumbnail",
     header: "Image",
     cell: ({ cell, row }) => {
-      const mainImage = cell.getValue() as { url: string };
-      const image = mainImage.url;
+      const thumbnail = cell.getValue() as { url: string };
+      const image = thumbnail.url;
       return (
         <Image src={image} alt={row.original.name} width={50} height={50} />
       );
@@ -38,6 +47,15 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "name",
     header: "Name",
+  },
+  {
+    accessorKey: "collections",
+    header: "Collections",
+    cell: ({ getValue }) => {
+      const collections = getValue() as Collection[];
+      const collectionNames = collections.map((coll) => coll.name);
+      return <Badges items={collectionNames} />;
+    },
   },
   {
     accessorKey: "isVisible",
@@ -59,26 +77,5 @@ export const columns: ColumnDef<Product>[] = [
 
       return <RowAction product={product} />;
     },
-  },
-];
-
-export const products: Product[] = [
-  {
-    id: "id123",
-    name: "sample",
-    image:
-      "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?cs=srgb&dl=pexels-madebymath-90946.jpg&fm=jpg",
-  },
-  {
-    id: "id123",
-    name: "sample",
-    image:
-      "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?cs=srgb&dl=pexels-madebymath-90946.jpg&fm=jpg",
-  },
-  {
-    id: "id123",
-    name: "sample",
-    image:
-      "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?cs=srgb&dl=pexels-madebymath-90946.jpg&fm=jpg",
   },
 ];

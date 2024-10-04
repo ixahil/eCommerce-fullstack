@@ -44,125 +44,6 @@ export const loginFormControls = [
   },
 ];
 
-// export const addProductFormControls = {
-//   name: {
-//     label: "Name",
-//     name: "name",
-//     componentType: "input",
-//     type: "text",
-//     required: true,
-//     placeholder: "Enter the product name",
-//   },
-//   sku: {
-//     label: "Sku",
-//     name: "sku",
-//     componentType: "input",
-//     type: "text",
-//     required: true,
-//     placeholder: "Enter the product sku",
-//   },
-//   description: {
-//     label: "Description",
-//     name: "description",
-//     componentType: "textarea",
-//     placeholder: "Enter the product description",
-//   },
-
-//   price: {
-//     label: "Price",
-//     name: "price",
-//     componentType: "number",
-//     type: "number",
-//     default: 0,
-//     min: 0,
-//     step: 0.01,
-//     placeholder: "Enter the product price",
-//     required: true,
-//   },
-//   salePrice: {
-//     label: "Sale price",
-//     name: "salePrice",
-//     componentType: "number",
-//     type: "number",
-//     default: 0,
-//     min: 0,
-//     step: 0.01,
-//     placeholder: "Enter the product sale price",
-//     required: true,
-//   },
-//   stock: {
-//     label: "Total Stock",
-//     name: "stock",
-//     componentType: "input",
-//     type: "number",
-//     default: 0,
-//     min: 0,
-//     step: 0.01,
-//     placeholder: "Enter the product Stock",
-//     required: true,
-//   },
-
-//   brand: {
-//     label: "Brand",
-//     name: "brand",
-//     componentType: "select",
-//     required: true,
-//     options: [
-//       { id: "nike", label: "Nike" },
-//       { id: "adidas", label: "Adidas" },
-//       { id: "puma", label: "Puma" },
-//       { id: "levis", label: "Levis" },
-//     ],
-//     placeholder: "Select the product brand",
-//   },
-//   collection: {
-//     label: "Collections",
-//     name: "collections",
-//     componentType: "select",
-//     required: true,
-//     options: [
-//       { id: "electronics", label: "Electronics" },
-//       { id: "clothing", label: "Clothing" },
-//       { id: "books", label: "Books" },
-//       { id: "home", label: "Home & Garden" },
-//     ],
-//     placeholder: "Select the product collection",
-//   },
-//   pageTitle: {
-//     label: "Page Title",
-//     name: "pageTitle",
-//     componentType: "input",
-//     type: "text",
-//     required: true,
-//     placeholder: "Enter the page title",
-//   },
-//   metaDescription: {
-//     label: "Meta Description",
-//     name: "metaDescription",
-//     componentType: "input",
-//     type: "text",
-//     required: true,
-//     placeholder: "Enter the Meta Description",
-//   },
-//   handle: {
-//     label: "Handle",
-//     name: "handle",
-//     componentType: "input",
-//     type: "text",
-//     required: true,
-//     placeholder: "Enter the URL Handle",
-//   },
-//   status: {
-//     label: "Status",
-//     name: "status",
-//     componentType: "select",
-//     type: "select",
-//     required: true,
-//     placeholder: "Select Status",
-//     options: ["Active", "Draft"],
-//   },
-// };
-
 export const addCollectionFormControls = [
   {
     groupId: 1,
@@ -247,9 +128,30 @@ export const menuFormControls = [
   },
 ];
 
-export type AddProductFormControls = typeof addProductFormControls;
+export type AddProductFormItem = {
+  label: string;
+  name: string;
+  componentType: "input" | "textarea" | "select" | "number" | "media"; // Define valid component types
+  type: string;
+  required: boolean;
+  placeholder: string;
+  defaultValue?: string;
+  options?: Array<{ handle: string; label: string }> | [];
+  disabled?: boolean;
+  min?: number;
+  step?: number;
+  default?: number;
+};
 
-export const addProductFormControls = [
+export type AddProductFormGroup = {
+  groupId: number;
+  children: Array<{
+    groupLabel: string;
+    items: AddProductFormItem[];
+  }>;
+};
+
+export const addProductFormControls: AddProductFormGroup[] = [
   {
     groupId: 1,
     children: [
@@ -268,7 +170,9 @@ export const addProductFormControls = [
             label: "Description",
             name: "description",
             componentType: "textarea",
+            type: "textarea",
             placeholder: "Enter the product description",
+            required: false,
           },
         ],
       },
@@ -276,11 +180,12 @@ export const addProductFormControls = [
         groupLabel: "Media",
         items: [
           {
-            label: "image",
+            label: "Product Image",
             name: "image",
-            componentType: "input",
+            componentType: "media",
             type: "image",
             placeholder: "Enter the product image",
+            required: false,
           },
         ],
       },
@@ -294,7 +199,6 @@ export const addProductFormControls = [
             type: "number",
             default: 0,
             min: 0,
-            step: 0.01,
             placeholder: "Enter the product price",
             required: true,
           },
@@ -305,7 +209,6 @@ export const addProductFormControls = [
             type: "number",
             default: 0,
             min: 0,
-            step: 0.01,
             placeholder: "Enter the product sale price",
             required: true,
           },
@@ -325,11 +228,10 @@ export const addProductFormControls = [
           {
             label: "Total Stock",
             name: "stock",
-            componentType: "input",
+            componentType: "number",
             type: "number",
             default: 0,
             min: 0,
-            step: 0.01,
             placeholder: "Enter the product Stock",
             required: true,
           },
@@ -343,24 +245,27 @@ export const addProductFormControls = [
             name: "pageTitle",
             componentType: "input",
             type: "text",
-            required: true,
+            required: false,
             placeholder: "Enter the page title",
+            disabled: true,
           },
           {
             label: "Meta Description",
             name: "metaDescription",
             componentType: "input",
             type: "text",
-            required: true,
+            required: false,
             placeholder: "Enter the Meta Description",
+            disabled: true,
           },
           {
             label: "Handle",
             name: "handle",
             componentType: "input",
             type: "text",
-            required: true,
+            required: false,
             placeholder: "Enter the URL Handle",
+            disabled: true,
           },
         ],
       },
@@ -377,11 +282,12 @@ export const addProductFormControls = [
             name: "status",
             componentType: "select",
             type: "select",
+            defaultValue: "ACTIVE",
             required: true,
             placeholder: "Select Status",
             options: [
-              { id: "ACTIVE", label: "Active" },
-              { id: "DRAFT", label: "Draft" },
+              { handle: "ACTIVE", label: "Active" },
+              { handle: "DRAFT", label: "Draft" },
             ],
           },
         ],
@@ -393,12 +299,13 @@ export const addProductFormControls = [
             label: "Brand",
             name: "brand",
             componentType: "select",
+            type: "select",
             required: true,
             options: [
-              { id: "nike", label: "Nike" },
-              { id: "adidas", label: "Adidas" },
-              { id: "puma", label: "Puma" },
-              { id: "levis", label: "Levis" },
+              { handle: "electronics", label: "Electronics" },
+              { handle: "clothing", label: "Clothing" },
+              { handle: "books", label: "Books" },
+              { handle: "home", label: "Home & Garden" },
             ],
             placeholder: "Select the product brand",
           },
@@ -406,12 +313,13 @@ export const addProductFormControls = [
             label: "Collections",
             name: "collections",
             componentType: "select",
+            type: "select",
             required: true,
             options: [
-              { id: "electronics", label: "Electronics" },
-              { id: "clothing", label: "Clothing" },
-              { id: "books", label: "Books" },
-              { id: "home", label: "Home & Garden" },
+              { handle: "electronics", label: "Electronics" },
+              { handle: "clothing", label: "Clothing" },
+              { handle: "books", label: "Books" },
+              { handle: "home", label: "Home & Garden" },
             ],
             placeholder: "Select the product collection",
           },

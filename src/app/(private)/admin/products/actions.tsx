@@ -26,10 +26,10 @@ export const RowAction = ({ product }: { product: Product }) => {
 
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link href={`/shop/product/${product.id}`}>View product</Link>
+          <Link href={`/shop/products/${product._id}`}>View product</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href={`/admin/product/${product.id}`}>View product</Link>
+          <Link href={`/admin/products/${product._id}`}>Edit product</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>Delete product</DropdownMenuItem>
       </DropdownMenuContent>
