@@ -18,6 +18,8 @@ interface Brand {
   handle: string;
   description: string | null;
   products: string[];
+  image: Image;
+  status: "ACTIVE" | "DRAFT";
   createdAt: string; // or Date if you prefer
   updatedAt: string; // or Date if you prefer
   __v: number;

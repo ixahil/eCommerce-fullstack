@@ -1,31 +1,33 @@
 "use client";
 
 import PageLayout from "@/components/admin/layouts/page-layout";
-import LoadingSkeleton from "@/components/shared/skeleton/loading-skeleton";
-import { useGetCollectionsQuery } from "@/store/api/collection-api";
-import { collectionColumns } from "../columns";
 import { DataTable } from "@/components/shared/data-table";
+import LoadingSkeleton from "@/components/shared/skeleton/loading-skeleton";
+import { useGetBrandsQuery } from "@/store/api/brand-api";
+import { brandColumns, collectionColumns } from "../columns";
 
 const AdminCollectionList = () => {
   // const response = await fetch(process.env.NEXT_PUBLIC_API + "api/v1/products");
 
   // const { data } = await response.json();
 
-  const { data, isError, isLoading } = useGetCollectionsQuery();
+  const { data, isError, isLoading } = useGetBrandsQuery();
+
+  console.log(data);
 
   return (
     <PageLayout
       search
-      title={"View Collections"}
-      pathname="/products/collections"
-      button={{ label: "Add Collection", href: "collections/new" }}
+      title={"View Brands"}
+      pathname="products/brands"
+      button={{ label: "Add Brand", href: "brands/new" }}
     >
       {isLoading ? (
         <LoadingSkeleton />
       ) : (
         <DataTable
           data={data?.data || []}
-          columns={collectionColumns}
+          columns={brandColumns}
           isError={isError}
         />
       )}

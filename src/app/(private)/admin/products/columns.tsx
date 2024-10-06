@@ -121,3 +121,46 @@ export const collectionColumns: ColumnDef<Product>[] = [
     },
   },
 ];
+
+export const brandColumns: ColumnDef<Product>[] = [
+  {
+    accessorKey: "image",
+    header: "Image",
+    cell: ({ cell, row }) => {
+      // const thumbnail = cell.getValue() as { url: string };
+      // const image = thumbnail.url;
+      // return (
+      //   <Image src={image} alt={row.original.name} width={50} height={50} />
+      // );
+    },
+  },
+  {
+    accessorKey: "handle",
+    header: "Handle",
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+  },
+  {
+    accessorKey: "products",
+    header: "Products Count",
+    cell: ({ cell }) => {
+      const productsCount = cell.getValue() as [];
+      return <p className="text-start">{productsCount.length}</p>;
+    },
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const product = row.original;
+
+      return <RowAction item={product} actionType="brand" />;
+    },
+  },
+];

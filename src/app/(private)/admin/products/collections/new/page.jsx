@@ -3,7 +3,7 @@ import AddPageLayout from "@/components/admin/layouts/add-page-layout";
 
 const AddProduct = () => {
   return (
-    <AddPageLayout pathname="/collections/new" title="Add Collection">
+    <AddPageLayout pathname="/products/collections/new" title="Add Collection">
       <CollectionForm action="create" />
     </AddPageLayout>
   );

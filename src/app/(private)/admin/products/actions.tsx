@@ -20,6 +20,7 @@ import {
 import { useDeleteCollectionMutation } from "@/store/api/collection-api";
 import { useDeleteProductMutation } from "@/store/api/product-api";
 import { useState } from "react";
+import { useDeleteBrandMutation } from "@/store/api/brand-api";
 
 export const RowAction = ({
   item,
@@ -30,10 +31,9 @@ export const RowAction = ({
 }) => {
   const pathname = usePathname();
 
-  const [deleteProductMutation, { isLoading: isLoadingProduct }] =
-    useDeleteProductMutation();
-  const [deleteCollectionMutation, { isLoading: isLoadingCollection }] =
-    useDeleteCollectionMutation();
+  const [deleteProductMutation] = useDeleteProductMutation();
+  const [deleteCollectionMutation] = useDeleteCollectionMutation();
+  const [deleteBrandMutation] = useDeleteBrandMutation();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,6 +44,8 @@ export const RowAction = ({
         await deleteProductMutation({ id: item._id });
       } else if (actionType === "collection") {
         await deleteCollectionMutation({ id: item._id });
+      } else if (actionType === "brand") {
+        await deleteBrandMutation({ id: item._id });
       }
     } finally {
       setIsLoading(false);

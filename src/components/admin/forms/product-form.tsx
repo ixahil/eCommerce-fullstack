@@ -106,7 +106,7 @@ const ProductForm = ({ data, action }: { data: Product; action: string }) => {
     // Only set values if they are different
     if (pageTitle !== form.formState.defaultValues?.pageTitle) {
       form.setValue("pageTitle", pageTitle);
-      if (!form.getValues("handle")) {
+      if (action === "create") {
         form.setValue("handle", pageTitle);
       }
     }

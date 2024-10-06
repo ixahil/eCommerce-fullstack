@@ -1,50 +1,40 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { addCollectionFormControls } from "@/config/form/forms-data";
+import { addBrandFormControls } from "@/config/form/forms-data";
 import { FormElemRenderer } from "@/utils/formElementRenderer";
 
 import { Form } from "@/components/ui/form";
 import {
-  useAddProductMutation,
-  useUpdateProductMutation,
-} from "@/store/api/product-api";
+  useAddBrandMutation,
+  useUpdateBrandMutation,
+} from "@/store/api/brand-api";
 import { isFetchBaseQueryError } from "@/store/utils";
-import { Collection } from "@/types/product";
+import { Brand } from "@/types/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-import {
-  useAddCollectionMutation,
-  useUpdateCollectionMutation,
-} from "@/store/api/collection-api";
+import { object, z } from "zod";
 
 // Define the schema for individual form items
 const formSchema = z.object({
-  name: z.string().min(3, "Name must be greater than 3 char"),
+  name: z.string().min(3, "Name must be greater than 3 char").trim(),
   description: z.string(),
-  image: z.union([z.instanceof(File), z.string()]),
+  image: z.union([z.instanceof(File), z.string()]).nullable(),
   status: z.string(),
-  handle: z.string(),
+  handle: z.string().trim(),
 });
 
 export type FormFields = z.infer<typeof formSchema>;
 
 // Your form component
-const CollectionForm = ({
-  data,
-  action,
-}: {
-  data: Collection;
-  action: string;
-}) => {
+const BrandForm = ({ data, action }: { data: Brand; action: string }) => {
   const params = useParams();
 
-  const [addCollectionMutation] = useAddCollectionMutation();
-  const [updateCollectionMutation] = useUpdateCollectionMutation();
+  const [addBrandMutation] = useAddBrandMutation();
+  const [updateBrandMutation] = useUpdateBrandMutation();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
@@ -57,13 +47,14 @@ const CollectionForm = ({
     },
   });
 
-  const name = form.watch("name");
+  const nameUpdate = form.watch("name");
 
   useEffect(() => {
     if (action === "create") {
-      form.setValue("handle", name.toLowerCase().replace(/\s/g, "-"));
+      const name = form.getValues("name");
+      form.setValue("handle", name.trim().replace(/\s+/g, "-").toLowerCase());
     }
-  }, [name]);
+  }, [nameUpdate, form]);
 
   const onSubmit: SubmitHandler<FormFields> = async (candidateData) => {
     const formData = new FormData();
@@ -90,7 +81,7 @@ const CollectionForm = ({
     }
 
     if (action === "create") {
-      const { error } = await addCollectionMutation({ payload: formData });
+      const { error } = await addBrandMutation({ payload: formData });
 
       if (isFetchBaseQueryError(error)) {
         try {
@@ -103,7 +94,7 @@ const CollectionForm = ({
         }
       }
     } else {
-      const { error } = await updateCollectionMutation({
+      const { error } = await updateBrandMutation({
         id: params.id,
         payload: formData,
       });
@@ -153,7 +144,7 @@ const CollectionForm = ({
         </div>
         <div className="grid grid-cols-6 gap-8">
           <div className="col-span-4 space-y-8">
-            {addCollectionFormControls[0].children.map((formGroup) => (
+            {addBrandFormControls[0].children.map((formGroup) => (
               <InputGroupCard
                 key={formGroup.groupLabel}
                 label={formGroup.groupLabel}
@@ -165,7 +156,7 @@ const CollectionForm = ({
             ))}
           </div>
           <div className="col-span-2 space-y-8">
-            {addCollectionFormControls[1].children.map((formGroup) => (
+            {addBrandFormControls[1].children.map((formGroup) => (
               <InputGroupCard
                 key={formGroup.groupLabel}
                 label={formGroup.groupLabel}
@@ -197,4 +188,4 @@ const InputGroupCard = ({
   );
 };
 
-export default CollectionForm;
+export default BrandForm;

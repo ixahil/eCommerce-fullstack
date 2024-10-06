@@ -44,6 +44,86 @@ export const loginFormControls = [
   },
 ];
 
+export const addBrandFormControls: CollectionFormGroup[] = [
+  {
+    groupId: 1,
+    children: [
+      {
+        groupLabel: "Basic Info",
+        items: [
+          {
+            label: "Name",
+            name: "name",
+            componentType: "input",
+            type: "text",
+            required: true,
+            placeholder: "Enter the brand name",
+          },
+          {
+            label: "Description",
+            name: "description",
+            componentType: "textarea",
+            type: "textarea",
+            required: false,
+            placeholder: "Enter the brand description",
+          },
+        ],
+      },
+      {
+        groupLabel: "Featured Image",
+        items: [
+          {
+            label: "Image",
+            name: "image",
+            componentType: "media",
+            type: "image",
+            required: false,
+            placeholder: "Upload brand image",
+            multiple: false,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupId: 2,
+    children: [
+      {
+        groupLabel: "Status",
+        items: [
+          {
+            label: "Brand Status",
+            name: "status",
+            componentType: "select",
+            type: "select",
+            required: true,
+            placeholder: "Select Status",
+            options: [
+              { handle: "ACTIVE", label: "Active" },
+              { handle: "DRAFT", label: "Draft" },
+            ],
+          },
+        ],
+      },
+
+      {
+        groupLabel: "Handle",
+        items: [
+          {
+            label: "Handle",
+            name: "handle",
+            componentType: "input",
+            type: "text",
+            required: true,
+            placeholder: "Enter the URL Handle",
+            disabled: true,
+          },
+        ],
+      },
+    ],
+  },
+];
+
 export type CollectionFormControls = {
   label: string;
   name: string;
