@@ -25,39 +25,31 @@ Content-Type: application/json
 
 {
   "name": "Product 1",
-  "sku": "sku123",
-  "collections": [
-   {"name": "Electronics", "handle": "electronics"},
-   {"name": "Gadgets", "handle": "gadgets"}
-  ],
-  "brand": {"name":"Kira", "handle":"kira"},
+  "sku": "sku12311",
+  "collections": "electronics",
+  "brand": "kira",
   "price": 10,
   "salePrice": 10,
   "stock": 1,
   "isFeatured": false,
   "isFreeShipping": false,
   "isVisible": true,
-  "status": "ACTIVE"
+  "status": "ACTIVE",
+  "handle": "product-1"
   }
 
 ### UPDATE PRODUCT
-POST {{host}}/products/670005202588632d6bc36d80
+POST {{host}}/products/67010768603b1635a4f79daa
 Content-Type: application/json
 
 {
   "name": "Product 1",
   "sku": "sku123",
-  "collections": [
-   {"name": "Electronics", "handle": "electronics"},
-   {"name": "Gadgets", "handle": "gadgets"}
-  ],
-  "brand": {"name":"Kira", "handle":"kira"},
+  "collections": "gadgets",
+  "brand": "hp",
   "price": 10,
   "salePrice": 10,
   "stock": 1,
-  "isFeatured": false,
-  "isFreeShipping": false,
-  "isVisible": true,
   "status": "ACTIVE"
   }
 
@@ -76,3 +68,42 @@ GET {{host}}/brands
 
 ###
 GET {{host}}/products/66ee9bfc8e48cc9fae1bd1b0
+
+
+### COLLECTIONS
+
+### CREATE COLLECTION
+POST {{host}}/collections
+Content-Type: application/json
+
+{
+  "name": "Gadgets",
+  "handle":  "gadgets",
+  "description": "Collection Description",
+  "status": "DRAFT"
+}
+
+### UPDATE COLLECTION
+POST {{host}}/collections/67028e37474008c429a2dff9
+Content-Type: application/json
+
+{
+  "name": "Electronics 1",
+  "handle":  "electronics",
+  "description": "Collection Description",
+  "status": "ACTIVE"
+}
+
+
+
+### BRANDS
+
+### CREATE BRANDS
+POST {{host}}/brands
+Content-Type: application/json
+
+{
+  "name": "HP",
+  "handle":  "hp",
+  "description": "Brand Description"
+}

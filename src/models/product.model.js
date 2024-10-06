@@ -19,7 +19,8 @@ const productSchema = new Schema(
     description: {
       type: String,
     },
-    collections: [{ type: Schema.Types.ObjectId, ref: "Collection" }],
+    // collections: [{ type: Schema.Types.ObjectId, ref: "Collection" }],
+    collections: { type: Schema.Types.ObjectId, ref: "Collection" },
     brand: { type: Schema.Types.ObjectId, ref: "Brand", default: null },
     price: {
       default: 0,
@@ -74,9 +75,89 @@ const productSchema = new Schema(
       enum: ["ACTIVE", "DRAFT", "DELETED"],
       default: "ACTIVE",
     },
+    handle: {
+      type: String,
+      unique: true,
+      required: true,
+    },
   },
   { timestamps: true }
 );
+
+// productSchema.methods.assignCollectionsAndBrand = async function (
+//   collections,
+//   brand
+// ) {
+//   const product = this;
+
+//   const newCollectionsSet = new Set(
+//     collections.map((collection) => collection._id.toString())
+//   );
+
+//   const collectionsToRemove = product.collections.filter(
+//     (collId) => !newCollectionsSet.has(collId.toString())
+//   );
+
+//   // console.log("getting collections new", collections);
+//   // console.log("ids of removing collections", collectionsToRemove);
+//   // console.log("ids of previous collections", product.collections);
+
+//   for (const id of collectionsToRemove) {
+//     await CollectionModel.removeProduct(id, product._id);
+//     if (product.collections.includes(id)) {
+//       product.collections = product.collections.filter(
+//         (collId) => !collectionsToRemove.includes(collId)
+//       );
+//     }
+//   }
+
+//   collections.forEach((collection) => {
+//     if (!product.collections.includes(collection._id)) {
+//       product.collections.push(collection._id);
+//     }
+//     if (!collection.products.includes(product._id)) {
+//       collection.products.push(product._id);
+//     }
+//   });
+
+//   const brandToRemove = product.brand !== brand._id;
+
+//   if (brandToRemove) {
+//     await BrandModel.removeProduct(product.brand, product._id);
+//   }
+
+//   // Assign the brand to the product
+//   product.brand = brand._id;
+
+//   if (!brand.products.includes(product._id)) {
+//     brand.products.push(product._id);
+//   }
+
+//   // Save all in parallel using Promise.all
+//   await Promise.all([
+//     product.save(),
+//     ...collections.map((collection) => collection.save()),
+//     brand.save(),
+//   ]);
+// };
+
+productSchema.pre("save", async function (next) {
+  let product = this;
+
+  if (!product.isNew) {
+    return next();
+  }
+
+  let originalHandle = product.handle;
+  let count = 1;
+
+  while (await product.constructor.findOne({ handle: product.handle })) {
+    product.handle = `${originalHandle}-${count}`;
+    count++;
+  }
+
+  next();
+});
 
 productSchema.methods.assignCollectionsAndBrand = async function (
   collections,
@@ -84,54 +165,36 @@ productSchema.methods.assignCollectionsAndBrand = async function (
 ) {
   const product = this;
 
-  const newCollectionsSet = new Set(
-    collections.map((collection) => collection._id.toString())
-  );
+  const collectionToRemove =
+    product.collections?.toString() !== collections._id?.toString();
 
-  const collectionsToRemove = product.collections.filter(
-    (collId) => !newCollectionsSet.has(collId.toString())
-  );
-
-  // console.log("getting collections new", collections);
-  // console.log("ids of removing collections", collectionsToRemove);
-  // console.log("ids of previous collections", product.collections);
-
-  for (const id of collectionsToRemove) {
-    await CollectionModel.removeProduct(id, product._id);
-    if (product.collections.includes(id)) {
-      product.collections = product.collections.filter(
-        (collId) => !collectionsToRemove.includes(collId)
-      );
-    }
+  if (collectionToRemove) {
+    await CollectionModel.removeProduct(product.collections, product._id);
   }
 
-  collections.forEach((collection) => {
-    if (!product.collections.includes(collection._id)) {
-      product.collections.push(collection._id);
-    }
-    if (!collection.products.includes(product._id)) {
-      collection.products.push(product._id);
-    }
-  });
-
-  const brandToRemove = product.brand !== brand._id;
+  const brandToRemove = product.brand?.toString() !== brand._id?.toString();
 
   if (brandToRemove) {
     await BrandModel.removeProduct(product.brand, product._id);
   }
-
   // Assign the brand to the product
   product.brand = brand._id;
+  product.collections = collections._id;
 
   if (!brand.products.includes(product._id)) {
     brand.products.push(product._id);
   }
 
+  if (!collections.products.includes(product._id)) {
+    collections.products.push(product._id);
+  }
+
   // Save all in parallel using Promise.all
   await Promise.all([
     product.save(),
-    ...collections.map((collection) => collection.save()),
     brand.save(),
+    collections.save(),
+    // ...collections.map((collection) => collection.save()),
   ]);
 };
 

@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { AppError } from "../utils/index.js";
 
 const BrandSchema = new Schema(
   {
@@ -31,10 +32,11 @@ const BrandSchema = new Schema(
   { timestamps: true }
 );
 
-BrandSchema.statics.findOrCreate = async function ({name, handle}) {
-  let brand = await this.findOne({ handle });
+BrandSchema.statics.findOrCreate = async function (brandHandle) {
+  let brand = await this.findOne({ handle: brandHandle });
   if (!brand) {
-    brand = await this.create({ name, handle });
+    // brand = await this.create({ name, handle });
+    throw new AppError(404, "Brand Not Found");
   }
   return brand;
 };
@@ -45,6 +47,12 @@ BrandSchema.statics.removeProduct = async function (brandId, productId) {
     { $pull: { products: productId } },
     { new: true }
   );
+};
+
+BrandSchema.methods.removeProduct = function (productId) {
+  return (this.products = this.products.filter(
+    (product) => product.toString() !== productId.toString()
+  ));
 };
 
 export const BrandModel = mongoose.model("Brand", BrandSchema);

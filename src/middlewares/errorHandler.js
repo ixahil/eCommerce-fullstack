@@ -7,21 +7,19 @@ const errorHandler = (err, req, res, next) => {
 
   // If Not Thrown by AppError - Not a custom Error instance
   const statusCode =
-    error.statusCode || error instanceof MongooseError ? 400 : 500;
+    error.statusCode || error instanceof mongoose.mongo.MongoError ? 400 : 500;
 
   if (!(error instanceof AppError)) {
     // Default Error
     let message = error.message || "Something went wrong!";
     error = new AppError(statusCode, message, error?.errors);
-
-    // Mongoose Duplicate Fields Error - 11000
-    if (err.code === 11000) {
-      console.log("mongoose error");
-      message = `${Object.keys(err.keyValue)}: ${Object.values(
-        err.keyValue
-      )} is already exists`;
-      error = new AppError(statusCode, message, error?.errors || [], err.stack);
-    }
+  }
+  // Mongoose Duplicate Fields Error - 11000
+  if (err.code === 11000) {
+    const message = `${Object.keys(err.keyValue)}: ${Object.values(
+      err.keyValue
+    )} is already exists`;
+    error = new AppError(statusCode, message, error?.errors || [], err.stack);
   }
 
   const response = {

@@ -1,7 +1,7 @@
 import { BrandModel, CollectionModel, ProductModel } from "../models/index.js";
 import { asyncHandler } from "../middlewares/index.js";
 import { AppError, AppResponse } from "../utils/index.js";
-import { cloudinary } from "../lib/index.js";
+import { fileDeleter, fileUploader } from "../lib/cloudinary.js";
 
 export const createProduct = asyncHandler(async (req, res, next) => {
   const {
@@ -11,14 +11,25 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     name,
     brand: candidateBrand,
     price,
-    salPrice,
+    salePrice,
+    status,
+    handle,
     stock,
     isFreeShipping,
     isFeatured,
     isVisible,
   } = req.body;
 
-  const image = req.files?.images[0];
+  const images = req.files?.images;
+
+  const collections = await CollectionModel.findOrCreate(candidateCollections);
+  const brand = await BrandModel.findOrCreate(candidateBrand);
+
+  let uploadResults = [];
+
+  if (images) {
+    uploadResults = await fileUploader(images, sku, `products/${sku}`);
+  }
 
   const product = await ProductModel.create({
     sku,
@@ -26,36 +37,27 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     price,
     salePrice,
     description,
+    handle,
     stock,
     isFreeShipping,
     isFeatured,
+    status,
     isVisible,
+    images: uploadResults,
   });
-
-  if (image) {
-    const uploadResult = await cloudinary.uploader
-      .upload(image.tempFilePath, {
-        public_id: `${sku}-image`,
-        folder: `products/${sku}`,
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    product.thumbnail = {
-      public_id: uploadResult.public_id,
-      url: uploadResult.secure_url,
-    };
-  }
-
-  // Use statics for collection and brand
-  const collections = await CollectionModel.findOrCreate(candidateCollections);
-  const brand = await BrandModel.findOrCreate(candidateBrand);
 
   // Assign collections and brand to product also add product in collection and brand
   await product.assignCollectionsAndBrand(collections, brand);
 
-  res.status(201).json(new AppResponse(201, { product, collections, brand }));
+  res
+    .status(201)
+    .json(
+      new AppResponse(
+        201,
+        { product, collections, brand },
+        "Product Added Successfully"
+      )
+    );
 });
 
 export const updateProduct = asyncHandler(async (req, res, next) => {
@@ -65,6 +67,8 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
     description,
     name,
     salePrice,
+    handle,
+    status,
     brand: candidateBrand,
     price,
     stock,
@@ -75,20 +79,44 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
 
   const { id } = req.params;
 
+  const prevImages = req.body?.prevImages
+    ? JSON.parse(req.body.prevImages)
+    : [];
+
   const product = await ProductModel.findByIdAndUpdate(id, {
     sku,
     name,
     price,
     salePrice,
+    handle,
     description,
     stock,
     isFreeShipping,
     isFeatured,
     isVisible,
-  });
+    status,
+    images: prevImages,
+  }); // Option to return the updated product
 
   if (!product) {
     throw new AppError(404, "Product not found");
+  }
+
+  const deletedImages = product.images.filter(
+    (img) =>
+      !prevImages.some(
+        (prevImg) => prevImg._id.toString() === img._id.toString()
+      )
+  );
+
+  if (deletedImages.length > 0) {
+    await fileDeleter(deletedImages);
+  }
+
+  const images = req.files?.images;
+  if (images) {
+    const uploadResults = await fileUploader(images, sku, `products/${sku}`);
+    product.images = [...product.images, ...uploadResults];
   }
 
   // Use statics for collection and brand
@@ -98,7 +126,15 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
   // Assign collections and brand to product also add product in collection and brand
   await product.assignCollectionsAndBrand(collections, brand);
 
-  res.status(201).json(new AppResponse(201, { product, collections, brand }));
+  res
+    .status(200)
+    .json(
+      new AppResponse(
+        200,
+        { product, collections, brand },
+        "Product updated successfully"
+      )
+    );
 });
 
 export const getProducts = asyncHandler(async (req, res, next) => {
@@ -115,4 +151,14 @@ export const getProduct = asyncHandler(async (req, res, next) => {
     .populate("brand")
     .populate("collections");
   res.status(200).json(new AppResponse(200, products));
+});
+
+export const deleteProduct = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const products = await ProductModel.findByIdAndDelete(id);
+
+  res
+    .status(200)
+    .json(new AppResponse(200, null, "Product Deleted Successfully"));
 });
