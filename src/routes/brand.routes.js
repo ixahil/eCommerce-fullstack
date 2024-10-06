@@ -1,20 +1,18 @@
 import { Router } from "express";
 import {
   createBrand,
-  createCollection,
-  getBrands,
   deleteBrand,
-  deleteCollection,
+  getBrand,
+  getBrands,
   updateBrand,
-  updateCollection,
 } from "../controllers/index.js";
-import { authenticate } from "../middlewares/index.js";
 
 const router = Router();
 
 router.get("", getBrands);
-router.post("", authenticate, createBrand);
-router.post("/:id", authenticate, updateBrand);
-router.delete("/:id", authenticate, deleteBrand);
+router.get("/:id", getBrand);
+router.post("", createBrand);
+router.post("/:id", updateBrand);
+router.delete("/:id", deleteBrand);
 
 export { router as brandRouter };

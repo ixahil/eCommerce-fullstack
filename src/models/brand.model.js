@@ -24,6 +24,17 @@ const BrandSchema = new Schema(
         type: Schema.Types.ObjectId,
       },
     ],
+    image: {
+      public_id: {
+        type: String,
+        default: "products/cg9i5zfdrprw7wj1lngk",
+      },
+      url: {
+        type: String,
+        default:
+          "https://res.cloudinary.com/diggcdfvp/image/upload/v1726914401/products/cg9i5zfdrprw7wj1lngk.png",
+      },
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",

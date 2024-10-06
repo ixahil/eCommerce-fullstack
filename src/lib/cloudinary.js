@@ -70,4 +70,12 @@ export const fileDeleter = async (deletedImages) => {
   }
 };
 
+export const deleteFolder = async (folderName) => {
+  try {
+    const result = await cloudinary.api.delete_resources_by_prefix(folderName);
+  } catch (error) {
+    console.error("Error deleting folder:", error);
+  }
+};
+
 export { cloudinary };
