@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { baseURL, responseHandler, errorHandler } from "../utils";
-import { login } from "../slice/auth-slice";
+import { baseURL, errorHandler, responseHandler } from "../utils";
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -9,12 +8,7 @@ export const userApi = createApi({
     getUser: builder.query({
       query: () => "",
       transformResponse: responseHandler,
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-        try {
-          const { data } = await queryFulfilled;
-          dispatch(login(data.data.user));
-        } catch (error) {}
-      },
+      transformErrorResponse: errorHandler,
     }),
   }),
 });

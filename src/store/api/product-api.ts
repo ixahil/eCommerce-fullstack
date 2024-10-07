@@ -34,6 +34,11 @@ export const productApi = createApi({
   >,
   tagTypes: ["products", "product"],
   endpoints: (builder) => ({
+    getProduct: builder.query({
+      query: ({ id }) => `/${id}`,
+      transformErrorResponse: errorHandler,
+      transformResponse: responseHandler,
+    }),
     getProducts: builder.query({
       query: () => "",
       transformResponse: responseHandler,
@@ -48,6 +53,7 @@ export const productApi = createApi({
       }),
       transformResponse: responseHandler,
       transformErrorResponse: errorHandler,
+      invalidatesTags: ["products"],
     }),
     updateProduct: builder.mutation({
       query: ({ id, payload }) => ({
@@ -57,6 +63,7 @@ export const productApi = createApi({
       }),
       transformErrorResponse: errorHandler,
       transformResponse: responseHandlerToast,
+      invalidatesTags: ["products"],
     }),
 
     deleteProduct: builder.mutation({
@@ -67,12 +74,6 @@ export const productApi = createApi({
       transformErrorResponse: errorHandler,
       transformResponse: responseHandlerToast,
       invalidatesTags: ["products"],
-    }),
-
-    getProduct: builder.query({
-      query: ({ id }) => `/${id}`,
-      transformErrorResponse: errorHandler,
-      transformResponse: responseHandler,
     }),
   }),
 });

@@ -4,7 +4,7 @@ import PageLayout from "@/components/admin/layouts/page-layout";
 import { DataTable } from "@/components/shared/data-table";
 import LoadingSkeleton from "@/components/shared/skeleton/loading-skeleton";
 import { useGetBrandsQuery } from "@/store/api/brand-api";
-import { brandColumns, collectionColumns } from "../columns";
+import { brandColumns } from "../columns";
 
 const AdminCollectionList = () => {
   // const response = await fetch(process.env.NEXT_PUBLIC_API + "api/v1/products");

@@ -16,7 +16,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { object, z } from "zod";
+import { z } from "zod";
 
 // Define the schema for individual form items
 const formSchema = z.object({
@@ -54,7 +54,7 @@ const BrandForm = ({ data, action }: { data: Brand; action: string }) => {
       const name = form.getValues("name");
       form.setValue("handle", name.trim().replace(/\s+/g, "-").toLowerCase());
     }
-  }, [nameUpdate, form]);
+  }, [nameUpdate, form, action]);
 
   const onSubmit: SubmitHandler<FormFields> = async (candidateData) => {
     const formData = new FormData();

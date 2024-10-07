@@ -15,6 +15,7 @@ const config: Config = {
         dashboard: {
           bg: "#e5e7eb",
           foreground: "#F2F8F7",
+          main: { dark: "#18181B", light: "#F2F8F7" },
         },
         card: {
           DEFAULT: "hsl(var(--card))",

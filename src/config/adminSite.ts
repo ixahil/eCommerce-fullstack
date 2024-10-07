@@ -19,10 +19,11 @@ export type MenuList = {
 type Submenu = {
   href: string;
   label: string;
-  active?: boolean;
+  active: boolean;
+  icon: LucideIcon;
 };
 
-type Menu = {
+export type Menu = {
   href: string;
   label: string;
   active: boolean;
@@ -86,7 +87,15 @@ const getMenuList = (pathname: string) => {
           href: "/admin/store",
           active: pathname.includes("/store"),
           icon: Store,
-          submenus: [],
+          submenus: [
+            {
+              label: "Navigations",
+              href: "/admin/store/navigations",
+              active: pathname.includes("/navigations"),
+              icon: Shapes,
+              submenus: [],
+            },
+          ],
         },
       ],
     },

@@ -1,30 +1,26 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { adminSiteConfig } from "@/config/adminSite";
+import { adminSiteConfig, Menu, MenuList } from "@/config/adminSite";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
-import { MenuList } from "@/config/adminSite";
-import { LogOut } from "lucide-react";
 import { CollapseMenuButton } from "./collapse-menu-button";
-import { ItemIndicator } from "@radix-ui/react-dropdown-menu";
+import { Ellipsis } from "lucide-react";
 
-type isOpen = boolean | undefined;
+type IsOpen = boolean | undefined;
 
-interface MenuProps {
-  isOpen: isOpen;
-}
-
-interface MenuGroupProps {
+interface MenuListProps {
   item: MenuList;
-  isOpen: isOpen;
+  isOpen: IsOpen;
 }
 
-type MenuItemProps = { item: MenuList["menus"]; isOpen: isOpen };
+interface MenuItemProps {
+  item: Menu;
+  isOpen: IsOpen;
+}
 
-const Menu = ({ isOpen }: MenuProps) => {
+const NavigationMenu = ({ isOpen }: { isOpen: boolean | undefined }) => {
   const pathname = usePathname();
   const menuList = adminSiteConfig.getMenuList(pathname);
 
@@ -33,7 +29,7 @@ const Menu = ({ isOpen }: MenuProps) => {
       <nav className="mt-8 h-full w-full">
         <ul className="flex flex-col items-start space-y-1 px-2 h-full">
           {menuList.map((menuGroup, index) => (
-            <MenuGroup item={menuGroup} key={index} isOpen={isOpen} />
+            <MenuListGroup item={menuGroup} key={index} isOpen={isOpen} />
           ))}
         </ul>
       </nav>
@@ -41,11 +37,11 @@ const Menu = ({ isOpen }: MenuProps) => {
   );
 };
 
-const MenuGroup = ({ item, isOpen }: MenuGroupProps) => {
+const MenuListGroup = ({ item, isOpen }: MenuListProps) => {
   return (
     <li className={cn("w-full", item.groupLabel ? "pt-5" : "")}>
       <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
-        {item.groupLabel}
+        {isOpen ? item.groupLabel : <Ellipsis />}
       </p>
       {item.menus.map((menuItem) => (
         <MenuItem item={menuItem} isOpen={isOpen} key={menuItem.label} />
@@ -93,4 +89,4 @@ const MenuItem = ({ item, isOpen }: MenuItemProps) => {
   );
 };
 
-export default Menu;
+export default NavigationMenu;

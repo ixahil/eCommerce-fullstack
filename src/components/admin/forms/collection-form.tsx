@@ -5,9 +5,9 @@ import { FormElemRenderer } from "@/utils/formElementRenderer";
 
 import { Form } from "@/components/ui/form";
 import {
-  useAddProductMutation,
-  useUpdateProductMutation,
-} from "@/store/api/product-api";
+  useAddCollectionMutation,
+  useUpdateCollectionMutation,
+} from "@/store/api/collection-api";
 import { isFetchBaseQueryError } from "@/store/utils";
 import { Collection } from "@/types/product";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,10 +17,6 @@ import { useParams } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  useAddCollectionMutation,
-  useUpdateCollectionMutation,
-} from "@/store/api/collection-api";
 
 // Define the schema for individual form items
 const formSchema = z.object({
@@ -63,7 +59,7 @@ const CollectionForm = ({
     if (action === "create") {
       form.setValue("handle", name.toLowerCase().replace(/\s/g, "-"));
     }
-  }, [name]);
+  }, [name, action, form]);
 
   const onSubmit: SubmitHandler<FormFields> = async (candidateData) => {
     const formData = new FormData();

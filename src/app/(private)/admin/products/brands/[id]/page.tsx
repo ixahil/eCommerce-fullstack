@@ -1,10 +1,8 @@
 "use client";
 import BrandForm from "@/components/admin/forms/brand-form";
-import CollectionForm from "@/components/admin/forms/collection-form";
 import AddPageLayout from "@/components/admin/layouts/add-page-layout";
 import LoadingSkeleton from "@/components/shared/skeleton/loading-skeleton";
 import { useGetBrandQuery } from "@/store/api/brand-api";
-import { useGetCollectionQuery } from "@/store/api/collection-api";
 
 type Props = {
   params: {
@@ -15,16 +13,18 @@ type Props = {
 const AdminEditCollection = (props: Props) => {
   const { id } = props.params;
 
-  const { data, isLoading } = useGetBrandQuery({ id: id });
+  const { data, isLoading, isError } = useGetBrandQuery({ id: id });
 
   console.log(data);
 
   return (
-    <AddPageLayout pathname="/products/brands/edit" title="Edit Brand">
+    <AddPageLayout pathname="/products/edit" title="Edit Product">
       {isLoading ? (
         <LoadingSkeleton />
+      ) : isError ? (
+        <div>Internal Server Error</div>
       ) : (
-        <BrandForm data={data?.data} action="update" />
+        data?.data && <BrandForm data={data?.data} action="update" />
       )}
     </AddPageLayout>
   );

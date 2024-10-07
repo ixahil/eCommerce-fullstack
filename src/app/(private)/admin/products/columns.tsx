@@ -84,11 +84,17 @@ export const collectionColumns: ColumnDef<Product>[] = [
     accessorKey: "image",
     header: "Image",
     cell: ({ cell, row }) => {
-      // const thumbnail = cell.getValue() as { url: string };
-      // const image = thumbnail.url;
-      // return (
-      //   <Image src={image} alt={row.original.name} width={50} height={50} />
-      // );
+      const image = cell.getValue() as { url: string };
+      return (
+        image && (
+          <Image
+            src={image.url}
+            alt={row.original.name}
+            width={50}
+            height={50}
+          />
+        )
+      );
     },
   },
   {
@@ -127,11 +133,17 @@ export const brandColumns: ColumnDef<Product>[] = [
     accessorKey: "image",
     header: "Image",
     cell: ({ cell, row }) => {
-      // const thumbnail = cell.getValue() as { url: string };
-      // const image = thumbnail.url;
-      // return (
-      //   <Image src={image} alt={row.original.name} width={50} height={50} />
-      // );
+      const image = cell.getValue() as { url: string };
+      return (
+        image && (
+          <Image
+            src={image.url}
+            alt={row.original.name}
+            width={50}
+            height={50}
+          />
+        )
+      );
     },
   },
   {

@@ -4,7 +4,7 @@ import { CustomizedFetchBaseQueryError } from "./api/product-api";
 
 export const baseURL = "http://localhost:8000/api/v1/";
 
-export const responseHandler = (response) => {
+export const responseHandler = (response: AppResponse<null>) => {
   return response;
 };
 

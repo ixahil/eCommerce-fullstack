@@ -6,6 +6,7 @@ import { productApi } from "./api/product-api";
 import { userApi } from "./api/user-api";
 import collectionApi from "./api/collection-api";
 import brandApi from "./api/brand-api";
+import sidebarSlice from "./slice/sidebar-slice";
 
 const makeStore = () =>
   configureStore({
@@ -17,6 +18,7 @@ const makeStore = () =>
       [userApi.reducerPath]: userApi.reducer,
       [collectionApi.reducerPath]: collectionApi.reducer,
       [brandApi.reducerPath]: brandApi.reducer,
+      [sidebarSlice.reducerPath]: sidebarSlice.reducer,
     },
     middleware: (getDefaultMiddleware) => {
       return getDefaultMiddleware()

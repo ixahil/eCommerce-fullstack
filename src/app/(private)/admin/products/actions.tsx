@@ -27,7 +27,7 @@ export const RowAction = ({
   actionType,
 }: {
   item: Product;
-  actionType: string;
+  actionType: "product" | "collection" | "brand";
 }) => {
   const pathname = usePathname();
 
@@ -62,7 +62,15 @@ export const RowAction = ({
   );
 };
 
-const ConfirmationDialog = ({ deleteAction, isLoading }) => {
+type ConfirmationDialogProps = {
+  deleteAction: () => Promise<void>;
+  isLoading: boolean;
+};
+
+const ConfirmationDialog = ({
+  deleteAction,
+  isLoading,
+}: ConfirmationDialogProps) => {
   const [open, setOpen] = useState(false);
 
   const handleDelete = async () => {
@@ -79,7 +87,7 @@ const ConfirmationDialog = ({ deleteAction, isLoading }) => {
         <DialogHeader>
           <DialogTitle>Delete Confirmation</DialogTitle>
           <DialogDescription>
-            Are you sure to Delete? This won't be reverted.
+            Are you sure to Delete? This wont be reverted.
           </DialogDescription>
         </DialogHeader>
 

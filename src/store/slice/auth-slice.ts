@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+interface AuthState {
+  isAuth: boolean;
+  user: null;
+}
 const initialState = {
   isAuth: false,
   user: null,
@@ -22,5 +26,5 @@ const authSlice = createSlice({
 
 export const { login, logout } = authSlice.actions;
 
-export const selectAuth = (state) => state.auth;
+export const selectAuth = (state: { auth: AuthState }) => state.auth;
 export default authSlice;

@@ -10,12 +10,7 @@ import {
   responseHandler,
   responseHandlerToast,
 } from "../utils";
-import { Brand } from "@/types/product";
 import { CustomizedFetchBaseQueryError } from "./product-api";
-
-type Prop = {
-  data: Brand[];
-};
 
 export const brandApi = createApi({
   reducerPath: "brandApi",
@@ -32,7 +27,7 @@ export const brandApi = createApi({
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
     }),
-    getBrands: builder.query<Prop, void>({
+    getBrands: builder.query({
       query: () => "",
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
@@ -46,6 +41,7 @@ export const brandApi = createApi({
       }),
       transformResponse: responseHandlerToast,
       transformErrorResponse: errorHandler,
+      invalidatesTags: ["brands"],
     }),
     updateBrand: builder.mutation({
       query: ({ id, payload }) => ({
@@ -55,6 +51,7 @@ export const brandApi = createApi({
       }),
       transformErrorResponse: errorHandler,
       transformResponse: responseHandlerToast,
+      invalidatesTags: ["brands"],
     }),
     deleteBrand: builder.mutation({
       query: ({ id }) => ({

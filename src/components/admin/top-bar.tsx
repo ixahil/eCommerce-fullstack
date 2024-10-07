@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Input } from "../ui/input";
 import Link from "next/link";
+import { Input } from "../ui/input";
 
 type Props = {
   search: boolean;

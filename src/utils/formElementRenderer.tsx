@@ -53,15 +53,17 @@ export const FormElemRenderer = ({ elem }: FormElemRendererProps) => {
                 <FormLabel>{label}</FormLabel>
                 <FormControl>
                   <Input
+                    {...field}
                     placeholder={placeholder}
                     type={type}
-                    {...field} // This includes value and onChange automatically
                     required={required}
                     disabled={disabled}
                   />
                 </FormControl>
                 {formState.errors[nameKey] && (
-                  <FormMessage>{formState.errors[nameKey].message}</FormMessage>
+                  <FormMessage>
+                    {formState?.errors[nameKey]?.message as string}
+                  </FormMessage>
                 )}
               </FormItem>
             );
@@ -94,7 +96,9 @@ export const FormElemRenderer = ({ elem }: FormElemRendererProps) => {
                   />
                 </FormControl>
                 {formState.errors[nameKey] && (
-                  <FormMessage>{formState.errors[nameKey].message}</FormMessage>
+                  <FormMessage>
+                    {formState?.errors[nameKey]?.message as string}
+                  </FormMessage>
                 )}
               </FormItem>
             );
@@ -120,7 +124,9 @@ export const FormElemRenderer = ({ elem }: FormElemRendererProps) => {
                   />
                 </FormControl>
                 {formState.errors[nameKey] && (
-                  <FormMessage>{formState.errors[nameKey].message}</FormMessage>
+                  <FormMessage>
+                    {formState?.errors[nameKey]?.message as string}
+                  </FormMessage>
                 )}
               </FormItem>
             );
@@ -154,7 +160,9 @@ export const FormElemRenderer = ({ elem }: FormElemRendererProps) => {
                 </SelectContent>
               </Select>
 
-              <FormMessage>{formState.errors[nameKey]?.message}</FormMessage>
+              <FormMessage>
+                {formState?.errors[nameKey]?.message as string}
+              </FormMessage>
             </FormItem>
           )}
         />

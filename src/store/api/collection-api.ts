@@ -10,16 +10,14 @@ import {
   responseHandler,
   responseHandlerToast,
 } from "../utils";
-import { setProducts } from "../slice/product-slice";
-import { Collection } from "@/types/product";
 import { CustomizedFetchBaseQueryError } from "./product-api";
 
-type GetCollections = {
-  statusCode: number;
-  data: Collection[];
-  message?: string;
-  status: "success" | "error";
-};
+// type GetCollections = {
+//   statusCode: number;
+//   data: Collection[];
+//   message?: string;
+//   status: "success" | "error";
+// };
 
 export const collectionApi = createApi({
   reducerPath: "collectionApi",
@@ -38,7 +36,7 @@ export const collectionApi = createApi({
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
     }),
-    getCollections: builder.query<GetCollections, void>({
+    getCollections: builder.query({
       query: () => "",
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
@@ -52,6 +50,7 @@ export const collectionApi = createApi({
       }),
       transformResponse: responseHandlerToast,
       transformErrorResponse: errorHandler,
+      invalidatesTags: ["collections"],
     }),
     updateCollection: builder.mutation({
       query: ({ id, payload }) => ({
@@ -61,6 +60,7 @@ export const collectionApi = createApi({
       }),
       transformErrorResponse: errorHandler,
       transformResponse: responseHandlerToast,
+      invalidatesTags: ["collections"],
     }),
     deleteCollection: builder.mutation({
       query: ({ id }) => ({

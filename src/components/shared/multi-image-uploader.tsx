@@ -15,7 +15,7 @@ const MultiImageUploader = ({
   label: string;
   required: boolean;
 }) => {
-  const { setValue, getValues, formState, watch } = useFormContext();
+  const { setValue, getValues, formState } = useFormContext();
   const initialValues = getValues(name);
 
   const [localFiles, setLocalFiles] = useState<(File | string)[]>(
@@ -38,7 +38,7 @@ const MultiImageUploader = ({
     }
   };
 
-  const handleRemove = (file: File) => {
+  const handleRemove = (file: File | string) => {
     const updatedFiles = localFiles.filter((f) => f !== file);
     setLocalFiles(updatedFiles);
     setValue(name, updatedFiles);
@@ -62,6 +62,9 @@ const MultiImageUploader = ({
 
   return (
     <div className="space-y-4 w-full">
+      {formState.errors && (
+        <span>{formState?.errors[name]?.message as string}</span>
+      )}
       <div className="flex items-center justify-center gap-4 flex-wrap">
         {localFiles.map((file, index) => {
           const imageUrl =

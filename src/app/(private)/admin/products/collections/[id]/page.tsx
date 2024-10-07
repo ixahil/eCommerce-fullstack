@@ -13,17 +13,16 @@ type Props = {
 const AdminEditCollection = (props: Props) => {
   const { id } = props.params;
 
-  const { data, isLoading } = useGetCollectionQuery({ id: id });
+  const { data, isLoading, isError } = useGetCollectionQuery({ id: id });
 
   return (
-    <AddPageLayout
-      pathname="/products/collections/edit"
-      title="Edit Collection"
-    >
+    <AddPageLayout pathname="/products/collections/edit" title="Edit Product">
       {isLoading ? (
         <LoadingSkeleton />
+      ) : isError ? (
+        <div>Internal Server Error</div>
       ) : (
-        <CollectionForm data={data?.data} action="update" />
+        data?.data && <CollectionForm data={data?.data} action="update" />
       )}
     </AddPageLayout>
   );

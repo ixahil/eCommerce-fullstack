@@ -1,4 +1,9 @@
+import { Product } from "@/types/product";
 import { createSlice } from "@reduxjs/toolkit";
+
+interface ProductState {
+  data?: Product[];
+}
 
 const initialState = {
   data: null,
@@ -17,6 +22,7 @@ const productSlice = createSlice({
 
 export const { setProducts } = productSlice.actions;
 
-export const selectProducts = (state) => state.data;
+export const selectProducts = (state: { product: ProductState }) =>
+  state.product;
 
 export default productSlice;

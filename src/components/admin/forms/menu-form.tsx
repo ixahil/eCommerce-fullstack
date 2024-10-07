@@ -1,17 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { addProductFormControls } from "@/config/form/forms-data";
+import { addCollectionFormControls } from "@/config/form/forms-data";
 import { FormElemRenderer } from "@/utils/formElementRenderer";
 
 import { Form } from "@/components/ui/form";
-import { useGetBrandsQuery } from "@/store/api/brand-api";
-import { useGetCollectionsQuery } from "@/store/api/collection-api";
 import {
-  useAddProductMutation,
-  useUpdateProductMutation,
-} from "@/store/api/product-api";
+  useAddCollectionMutation,
+  useUpdateCollectionMutation,
+} from "@/store/api/collection-api";
 import { isFetchBaseQueryError } from "@/store/utils";
-import { Brand, Collection, Product } from "@/types/product";
+import { Collection } from "@/types/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -24,117 +22,41 @@ import { z } from "zod";
 const formSchema = z.object({
   name: z.string().min(3, "Name must be greater than 3 char"),
   description: z.string(),
-  price: z.number(),
-  salePrice: z.number(),
-  images: z.array(z.union([z.instanceof(File), z.string()])),
-  brand: z.string().min(1, "Brand must be selected"),
-  collections: z.string().min(1, "Collection must be selected"),
-  stock: z.number(),
-  sku: z.string().min(3, "SKU must be greater than 3 char"),
+  image: z.union([z.instanceof(File), z.string()]),
   status: z.string(),
-  pageTitle: z.string(),
-  metaDescription: z.string(),
   handle: z.string(),
 });
 
 export type FormFields = z.infer<typeof formSchema>;
 
-interface BrandResponse {
-  data: { data: Brand[] };
-  isError: boolean;
-}
-
-interface CollectionResponse {
-  data: { data: Collection[] };
-  isError: boolean;
-}
 // Your form component
-const ProductForm = ({ data, action }: { data: Product; action: string }) => {
+const MenuForm = ({ data, action }: { data: Collection; action: string }) => {
   const params = useParams();
 
-  const { data: brandsData, isError: isBrandError } =
-    useGetBrandsQuery<BrandResponse>({});
-  const { data: collectionsData, isError: isCollectionError } =
-    useGetCollectionsQuery<CollectionResponse>({});
-
-  const [addProductMutation] = useAddProductMutation();
-  const [updateProductMutation] = useUpdateProductMutation();
-
-  const options = {
-    brand:
-      brandsData?.data.map((brand) => ({
-        handle: brand.handle,
-        label: brand.name,
-      })) || [],
-
-    collections:
-      collectionsData?.data?.map((collection) => ({
-        handle: collection.handle,
-        label: collection.name,
-      })) || [],
-
-    status: [
-      { handle: "DRAFT", label: "Draft" },
-      { handle: "ACTIVE", label: "Active" },
-    ],
-  };
+  const [addCollectionMutation] = useAddCollectionMutation();
+  const [updateCollectionMutation] = useUpdateCollectionMutation();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      brand: data?.brand?.handle || "",
-      collections: data?.collections?.handle || "",
       name: data?.name || "",
-      price: data?.price || 0,
       description: data?.description || "",
-      salePrice: data?.salePrice || 0,
-      stock: data?.stock || 0,
-      sku: data?.sku || "",
-      images: data?.images?.map((img: { url: string }) => img.url) || [],
+      image: data?.image?.url || "",
       status: data?.status || "ACTIVE",
-      pageTitle: data?.name || "",
-      metaDescription: "",
       handle: data?.handle || "",
     },
   });
 
-  useEffect(() => {
-    if (isBrandError) {
-      form.setError("brand", {
-        message: "Internal Server Error in Fetching Brands, Try Again!",
-      });
-    }
-    if (isCollectionError) {
-      form.setError("collections", {
-        message: "Internal Server Error in Fetching Collections, Try Again!",
-      });
-    }
-  }, [isBrandError, isCollectionError, form]);
-
-  const changeForMeta = form.watch(["name", "description"]);
+  const name = form.watch("name");
 
   useEffect(() => {
-    const pageTitle = form.getValues("name");
-    const metaDescription = form.getValues("description");
-
-    // Only set values if they are different
-    if (pageTitle !== form.formState.defaultValues?.pageTitle) {
-      form.setValue("pageTitle", pageTitle);
-      if (action === "create") {
-        form.setValue("handle", pageTitle);
-      }
+    if (action === "create") {
+      form.setValue("handle", name.toLowerCase().replace(/\s/g, "-"));
     }
-    if (metaDescription !== form.formState.defaultValues?.metaDescription) {
-      form.setValue("metaDescription", metaDescription);
-    }
-  }, [changeForMeta, form, action]);
+  }, [name, action, form]);
 
   const onSubmit: SubmitHandler<FormFields> = async (candidateData) => {
-    const keepImage = data?.images.filter((img) =>
-      candidateData.images.includes(img.url)
-    );
     const formData = new FormData();
-    formData.append("prevImages", JSON.stringify(keepImage));
 
     for (const key in candidateData) {
       if (candidateData.hasOwnProperty(key)) {
@@ -146,14 +68,19 @@ const ProductForm = ({ data, action }: { data: Product; action: string }) => {
               formData.append(key, item);
             }
           });
-        } else {
-          formData.append(key, String(value));
+        } else if (value != null) {
+          // Check for null/undefined
+          if (typeof value === "string" || typeof value === "number") {
+            formData.append(key, value.toString());
+          } else {
+            formData.append(key, value);
+          }
         }
       }
     }
 
     if (action === "create") {
-      const { error } = await addProductMutation({ payload: formData });
+      const { error } = await addCollectionMutation({ payload: formData });
 
       if (isFetchBaseQueryError(error)) {
         try {
@@ -166,7 +93,7 @@ const ProductForm = ({ data, action }: { data: Product; action: string }) => {
         }
       }
     } else {
-      const { error } = await updateProductMutation({
+      const { error } = await updateCollectionMutation({
         id: params.id,
         payload: formData,
       });
@@ -188,7 +115,7 @@ const ProductForm = ({ data, action }: { data: Product; action: string }) => {
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex justify-end items-center gap-4 sticky top-20">
           <Button variant={"outline"} asChild>
-            <Link href={"/admin/products"}>Cancel</Link>
+            <Link href={"/admin/collections"}>Cancel</Link>
           </Button>
           <Button
             disabled={form.formState.isSubmitting || !form.formState.isDirty}
@@ -216,7 +143,7 @@ const ProductForm = ({ data, action }: { data: Product; action: string }) => {
         </div>
         <div className="grid grid-cols-6 gap-8">
           <div className="col-span-4 space-y-8">
-            {addProductFormControls[0].children.map((formGroup) => (
+            {addCollectionFormControls[0].children.map((formGroup) => (
               <InputGroupCard
                 key={formGroup.groupLabel}
                 label={formGroup.groupLabel}
@@ -228,21 +155,13 @@ const ProductForm = ({ data, action }: { data: Product; action: string }) => {
             ))}
           </div>
           <div className="col-span-2 space-y-8">
-            {addProductFormControls[1].children.map((formGroup) => (
+            {addCollectionFormControls[1].children.map((formGroup) => (
               <InputGroupCard
                 key={formGroup.groupLabel}
                 label={formGroup.groupLabel}
               >
                 {formGroup.items.map((elem, index) => {
-                  return (
-                    <FormElemRenderer
-                      key={index}
-                      elem={{
-                        ...elem,
-                        options: options[elem.name as keyof typeof options],
-                      }}
-                    />
-                  );
+                  return <FormElemRenderer key={index} elem={elem} />;
                 })}
               </InputGroupCard>
             ))}
@@ -268,4 +187,4 @@ const InputGroupCard = ({
   );
 };
 
-export default ProductForm;
+export default MenuForm;

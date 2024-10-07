@@ -18,7 +18,7 @@ const PageLayout = ({ children, button, search, title, pathname }: Props) => {
     <div className="space-y-8">
       <BreadCrumbCustom pathname={pathname} />
       <h2 className="text-xl font-medium">{title}</h2>
-      <TopBar button={button} search />
+      <TopBar button={button} search={search} />
       {children}
     </div>
   );

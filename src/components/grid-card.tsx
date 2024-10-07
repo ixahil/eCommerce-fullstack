@@ -12,7 +12,7 @@ import React from "react";
 
 const GridCard = ({ className = "" }: { className: string }) => {
   return (
-    <Card className={cn("bg-zinc-50", className)}>
+    <Card className={cn("bg-zinc-50 dark:bg-zinc-800", className)}>
       <CardHeader>
         <CardTitle>Card Title</CardTitle>
         <CardDescription>Card Description</CardDescription>

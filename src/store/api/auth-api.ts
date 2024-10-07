@@ -15,8 +15,10 @@ export const authApi = createApi({
       transformResponse: responseHandler,
       transformErrorResponse: errorHandler,
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-        const { data } = await queryFulfilled;
-        dispatch(login(data.data.user));
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(login(data?.data));
+        } catch {}
       },
     }),
     register: builder.mutation({
@@ -36,8 +38,10 @@ export const authApi = createApi({
       transformResponse: responseHandler,
       transformErrorResponse: errorHandler,
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-        const { data } = await queryFulfilled;
-        dispatch(logout());
+        try {
+          await queryFulfilled;
+          dispatch(logout());
+        } catch {}
       },
     }),
   }),

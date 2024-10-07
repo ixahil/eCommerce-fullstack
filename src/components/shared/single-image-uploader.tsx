@@ -1,10 +1,10 @@
 "use client";
-import { useFormContext } from "react-hook-form";
-import { useState, useRef, useEffect } from "react";
+import { Edit, Trash } from "lucide-react";
 import Image from "next/image";
+import { useRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Trash, Edit } from "lucide-react";
 
 const SingleImageUploader = ({
   name,
