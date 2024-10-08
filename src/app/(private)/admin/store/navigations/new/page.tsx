@@ -4,6 +4,7 @@ import AddPageLayout from "@/components/admin/layouts/add-page-layout";
 import { Form } from "@/components/ui/form";
 import { menuFormControls } from "@/config/form/forms-data";
 import { useAddBrandMutation } from "@/store/api/brand-api";
+import { useAddMenuMutation } from "@/store/api/menu-api";
 import { submitHandler } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -11,28 +12,32 @@ import { useEffect } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 
+type Menu = {
+  id: string;
+  label: string;
+  handle: string;
+  children: Menu[];
+};
+
 const formSchema = z.object({
   name: z.string().min(3, "Name must be greater than 3 char"),
-  description: z.string(),
-  image: z.union([z.instanceof(File), z.string()]),
-  status: z.string(),
   handle: z.string(),
+  menu: z.array(z.object({})),
 });
 
 export type FormFields = z.infer<typeof formSchema>;
 
 const AddMenu = () => {
   const router = useRouter();
-  const [addBrandMutation] = useAddBrandMutation();
+
+  const [addMenuMutate] = useAddMenuMutation();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      description: "",
-      image: "",
-      status: "ACTIVE",
       handle: "",
+      menu: [],
     },
   });
 
@@ -46,8 +51,10 @@ const AddMenu = () => {
     console.log(values);
     const { success, error } = await submitHandler(
       values,
-      addBrandMutation,
-      form.setError
+      addMenuMutate,
+      form.setError,
+      null,
+      false
     );
 
     if (success) {

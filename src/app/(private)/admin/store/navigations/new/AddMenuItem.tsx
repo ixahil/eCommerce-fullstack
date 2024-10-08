@@ -46,6 +46,7 @@ type AddMenuItemProps = {
 const AddMenuItem = ({ isOpen, setIsOpen, setMenu }: AddMenuItemProps) => {
   const [data, setData] = useState(initialData);
   const [error, setError] = useState(initialData);
+  const [tabSegment, setTabSegment] = useState("collection");
 
   const { data: collectionsData } = useGetCollectionsQuery({});
 
@@ -62,11 +63,11 @@ const AddMenuItem = ({ isOpen, setIsOpen, setMenu }: AddMenuItemProps) => {
       errorMessages.name = "Name is required";
     }
 
-    if (!data.collection) {
+    if (tabSegment === "collection" && !data.collection) {
       errorMessages.collection = "Collection is required";
     }
 
-    if (!data.link) {
+    if (tabSegment === "link" && !data.link) {
       errorMessages.link = "Link is required";
     }
 
@@ -75,13 +76,23 @@ const AddMenuItem = ({ isOpen, setIsOpen, setMenu }: AddMenuItemProps) => {
     } else {
       setError(initialData);
 
-      const newItem = {
-        id: uuidv4(),
-        value: data.name,
-        path: `/collections/${data.collection}`,
-        children: [],
-      };
-      setMenu((prev) => [...prev, newItem]);
+      if (tabSegment === "collection") {
+        const newItem = {
+          id: uuidv4(),
+          label: data.name,
+          handle: `/collections/${data.collection}`,
+          children: [],
+        };
+        setMenu((prev) => [...prev, newItem]);
+      } else {
+        const newItem = {
+          id: uuidv4(),
+          label: data.name,
+          handle: `/pages/${data.link}`,
+          children: [],
+        };
+        setMenu((prev) => [...prev, newItem]);
+      }
       onClose();
     }
   };
@@ -110,17 +121,25 @@ const AddMenuItem = ({ isOpen, setIsOpen, setMenu }: AddMenuItemProps) => {
                 value={data.name}
                 name="name"
                 placeholder="e.g. Home"
-                className="bg-white p-4 border-2 rounded-lg"
+                className=""
               />
             </FormControl>
             <FormMessage>{error.name}</FormMessage>
           </FormItem>
           <Tabs defaultValue="collection" className="w-full space-y-8">
             <TabsList className="w-full py-4">
-              <TabsTrigger value="collection" className="w-full">
+              <TabsTrigger
+                value="collection"
+                className="w-full"
+                onClick={() => setTabSegment("collection")}
+              >
                 Collection
               </TabsTrigger>
-              <TabsTrigger value="link" className="w-full">
+              <TabsTrigger
+                value="link"
+                className="w-full"
+                onClick={() => setTabSegment("link")}
+              >
                 Link
               </TabsTrigger>
             </TabsList>
@@ -172,7 +191,6 @@ const AddMenuItem = ({ isOpen, setIsOpen, setMenu }: AddMenuItemProps) => {
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input
-                    disabled
                     required
                     onChange={(e) =>
                       setData((prev) => ({
@@ -182,7 +200,7 @@ const AddMenuItem = ({ isOpen, setIsOpen, setMenu }: AddMenuItemProps) => {
                     }
                     value={data.link}
                     name="link"
-                    className="bg-white p-4 border-2 rounded-lg"
+                    className="p-4 border-2 rounded-lg"
                     placeholder="/home"
                   />
                 </FormControl>

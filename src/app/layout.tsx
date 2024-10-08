@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import StoreProvider from "./sote-provider";
+import StoreProvider from "./store-provider";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "./theme-provider";
 

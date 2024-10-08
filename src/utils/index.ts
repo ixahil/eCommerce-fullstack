@@ -21,38 +21,42 @@ type MutationResponse = {
 export const submitHandler = async <T extends FieldValues>(
   candidateData: FieldValues,
   mutationFn: (args: {
-    payload: FormData;
+    payload: FormData | FieldValues;
     id?: string | null;
   }) => Promise<MutationResponse>,
   setError: UseFormSetError<T>,
-  id: string | null = null
+  id: string | null = null,
+  isFormData: boolean = true
 ): Promise<{ success: boolean; error?: string }> => {
-  const formData = new FormData();
+  let formData;
+  if (isFormData) {
+    formData = new FormData();
 
-  // Construct FormData from candidateData
-  for (const key in candidateData) {
-    if (candidateData.hasOwnProperty(key)) {
-      const value = candidateData[key];
+    // Construct FormData from candidateData
+    for (const key in candidateData) {
+      if (candidateData.hasOwnProperty(key)) {
+        const value = candidateData[key];
 
-      if (Array.isArray(value)) {
-        value.forEach((item) => {
-          if (item instanceof File) {
-            formData.append(key, item);
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            if (item instanceof File) {
+              formData.append(key, item);
+            } else {
+              formData.append(key, item);
+            }
+          });
+        } else if (value != null) {
+          if (typeof value === "string" || typeof value === "number") {
+            formData.append(key, value.toString());
           } else {
-            formData.append(key, item);
+            formData.append(key, value);
           }
-        });
-      } else if (value != null) {
-        if (typeof value === "string" || typeof value === "number") {
-          formData.append(key, value.toString());
-        } else {
-          formData.append(key, value);
         }
       }
     }
+  } else {
+    formData = candidateData;
   }
-
-  console.log(formData.getAll("removedImage"));
 
   try {
     const response = await mutationFn({ payload: formData, id: id });

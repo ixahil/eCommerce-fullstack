@@ -1,16 +1,20 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues, useFormContext } from "react-hook-form";
 import AddMenuItem from "./AddMenuItem";
 import { MinimalViable } from "@/components/shared/sortable-tree";
 
 const AddMenuGroup = () => {
   const [menu, setMenu] = useState([]);
+  const { formState, setValue, getValues } = useFormContext();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { formState } = useFormContext<FieldValues>();
+  useEffect(() => {
+    setValue("menu", menu);
+  }, [menu]);
+
   return (
     <>
       <div className="w-full space-y-4">

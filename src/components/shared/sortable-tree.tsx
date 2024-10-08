@@ -19,7 +19,7 @@ export const MinimalTreeItemComponent = React.forwardRef((props, ref) => {
     /* you could also use FolderTreeItemWrapper if you want to show vertical lines.  */
     <SimpleTreeItemWrapper {...props} ref={ref} className="">
       <div className="w-full">
-        <p>{props.item.value}</p>
+        <p>{props.item.label}</p>
       </div>
     </SimpleTreeItemWrapper>
   );

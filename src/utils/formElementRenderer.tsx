@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CommonFormItem } from "@/config/form/forms-data";
 
-import AddMenuGroup from "@/app/(private)/admin/products/new/AddMenuGroup";
+import AddMenuGroup from "@/app/(private)/admin/store/navigations/new/AddMenuGroup";
 import { FormFields } from "@/components/admin/forms/product-form";
 import MultiImageUploader from "@/components/shared/multi-image-uploader";
 import SingleImageUploader from "@/components/shared/single-image-uploader";
