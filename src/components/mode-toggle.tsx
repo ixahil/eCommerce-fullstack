@@ -15,8 +15,6 @@ import {
 export function ModeToggle() {
   const { setTheme, theme } = useTheme();
 
-  console.log(theme);
-
   return (
     <TooltipProvider disableHoverableContent>
       <Tooltip delayDuration={100}>

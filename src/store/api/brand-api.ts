@@ -20,18 +20,27 @@ export const brandApi = createApi({
     CustomizedFetchBaseQueryError,
     object
   >,
-  tagTypes: ["brands"],
+  tagTypes: ["brands", "brand"],
   endpoints: (builder) => ({
     getBrand: builder.query({
       query: ({ id }) => `/${id}`,
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
+      providesTags: ({ data }) => [
+        data ? { type: "brand", id: data._id } : { type: "brand", id: 0 },
+      ],
     }),
     getBrands: builder.query({
       query: () => "",
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
-      providesTags: ["brands"],
+      providesTags: ({ data }) =>
+        data
+          ? [
+              ...data.map(({ _id }) => ({ type: "brand" as const, id: _id })),
+              "brands",
+            ]
+          : ["brands"],
     }),
     addBrand: builder.mutation({
       query: ({ payload }) => ({
@@ -41,7 +50,9 @@ export const brandApi = createApi({
       }),
       transformResponse: responseHandlerToast,
       transformErrorResponse: errorHandler,
-      invalidatesTags: ["brands"],
+      providesTags: ({ data }) => [
+        data ? { type: "brand", id: data._id } : { type: "brand", id: 0 },
+      ],
     }),
     updateBrand: builder.mutation({
       query: ({ id, payload }) => ({
@@ -51,7 +62,7 @@ export const brandApi = createApi({
       }),
       transformErrorResponse: errorHandler,
       transformResponse: responseHandlerToast,
-      invalidatesTags: ["brands"],
+      invalidatesTags: ({ data }) => [{ type: "brand", id: data._id }],
     }),
     deleteBrand: builder.mutation({
       query: ({ id }) => ({

@@ -29,18 +29,32 @@ export const collectionApi = createApi({
     CustomizedFetchBaseQueryError,
     object
   >,
-  tagTypes: ["collections"],
+  tagTypes: ["collections", "collection"],
   endpoints: (builder) => ({
     getCollection: builder.query({
       query: ({ id }) => `/${id}`,
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
+      providesTags: ({ data }) => [
+        data
+          ? { type: "collection", id: data._id }
+          : { type: "collection", id: 0 },
+      ],
     }),
     getCollections: builder.query({
       query: () => "",
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
-      providesTags: ["collections"],
+      providesTags: ({ data }) =>
+        data
+          ? [
+              ...data.map(({ _id }) => ({
+                type: "collection" as const,
+                id: _id,
+              })),
+              "collections",
+            ]
+          : ["collections"],
     }),
     addCollection: builder.mutation({
       query: ({ payload }) => ({
@@ -50,7 +64,11 @@ export const collectionApi = createApi({
       }),
       transformResponse: responseHandlerToast,
       transformErrorResponse: errorHandler,
-      invalidatesTags: ["collections"],
+      providesTags: ({ data }) => [
+        data
+          ? { type: "collection", id: data._id }
+          : { type: "collection", id: 0 },
+      ],
     }),
     updateCollection: builder.mutation({
       query: ({ id, payload }) => ({
@@ -60,7 +78,7 @@ export const collectionApi = createApi({
       }),
       transformErrorResponse: errorHandler,
       transformResponse: responseHandlerToast,
-      invalidatesTags: ["collections"],
+      invalidatesTags: ({ data }) => [{ type: "collection", id: data._id }],
     }),
     deleteCollection: builder.mutation({
       query: ({ id }) => ({

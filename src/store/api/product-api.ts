@@ -38,12 +38,24 @@ export const productApi = createApi({
       query: ({ id }) => `/${id}`,
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
+      providesTags: ({ data }) => [
+        data ? { type: "product", id: data._id } : { type: "product", id: 0 },
+      ],
     }),
     getProducts: builder.query({
       query: () => "",
       transformResponse: responseHandler,
       transformErrorResponse: errorHandler,
-      providesTags: ["products"],
+      providesTags: ({ data }) =>
+        data
+          ? [
+              ...data.map(({ _id }) => ({
+                type: "product" as const,
+                id: _id,
+              })),
+              "products",
+            ]
+          : ["products"],
     }),
     addProduct: builder.mutation({
       query: ({ payload }) => ({
@@ -53,7 +65,9 @@ export const productApi = createApi({
       }),
       transformResponse: responseHandler,
       transformErrorResponse: errorHandler,
-      invalidatesTags: ["products"],
+      providesTags: ({ data }) => [
+        data ? { type: "product", id: data._id } : { type: "product", id: 0 },
+      ],
     }),
     updateProduct: builder.mutation({
       query: ({ id, payload }) => ({
@@ -63,7 +77,7 @@ export const productApi = createApi({
       }),
       transformErrorResponse: errorHandler,
       transformResponse: responseHandlerToast,
-      invalidatesTags: ["products"],
+      invalidatesTags: ({ data }) => [{ type: "product", id: data._id }],
     }),
 
     deleteProduct: builder.mutation({

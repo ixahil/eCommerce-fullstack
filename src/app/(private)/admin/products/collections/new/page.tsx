@@ -2,8 +2,8 @@
 import CommonForm from "@/components/admin/forms/common-form";
 import AddPageLayout from "@/components/admin/layouts/add-page-layout";
 import { Form } from "@/components/ui/form";
-import { menuFormControls } from "@/config/form/forms-data";
-import { useAddBrandMutation } from "@/store/api/brand-api";
+import { collectionFormControls } from "@/config/form/forms-data";
+import { useAddCollectionMutation } from "@/store/api/collection-api";
 import { submitHandler } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -21,9 +21,9 @@ const formSchema = z.object({
 
 export type FormFields = z.infer<typeof formSchema>;
 
-const AddMenu = () => {
+const AddCollection = () => {
   const router = useRouter();
-  const [addBrandMutation] = useAddBrandMutation();
+  const [addCollectionMutation] = useAddCollectionMutation();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
@@ -46,7 +46,7 @@ const AddMenu = () => {
     console.log(values);
     const { success, error } = await submitHandler(
       values,
-      addBrandMutation,
+      addCollectionMutation,
       form.setError
     );
 
@@ -58,12 +58,12 @@ const AddMenu = () => {
   };
 
   return (
-    <AddPageLayout title="Add menu" pathname="/products/menu/new">
+    <AddPageLayout title="Add Collection" pathname="/products/collections/new">
       <Form {...form}>
-        <CommonForm onSubmit={onSubmit} formControls={menuFormControls} />
+        <CommonForm onSubmit={onSubmit} formControls={collectionFormControls} />
       </Form>
     </AddPageLayout>
   );
 };
 
-export default AddMenu;
+export default AddCollection;

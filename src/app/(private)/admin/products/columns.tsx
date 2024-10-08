@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { RowAction } from "./actions";
 import Image from "next/image";
 import Badges from "@/components/ui/badges";
+import { Badge } from "@/components/ui/badge";
 
 export type Collection = {
   _id: string;
@@ -30,13 +31,21 @@ export type Product = {
 
 export const productColumns: ColumnDef<Product>[] = [
   {
-    accessorKey: "thumbnail",
+    accessorKey: "images",
     header: "Image",
     cell: ({ cell, row }) => {
-      const thumbnail = cell.getValue() as { url: string };
-      const image = thumbnail.url;
-      return (
-        <Image src={image} alt={row.original.name} width={50} height={50} />
+      const images = cell.getValue() as { url: string; public_id: string }[];
+      const firstImage = images[0]?.url;
+
+      return firstImage ? (
+        <Image
+          src={firstImage}
+          alt={row.original.name}
+          width={50}
+          height={50}
+        />
+      ) : (
+        <span>No image available</span>
       );
     },
   },
@@ -59,6 +68,14 @@ export const productColumns: ColumnDef<Product>[] = [
   {
     accessorKey: "isVisible",
     header: "Visible",
+    cell: ({ getValue }) => {
+      const isVisible = getValue() as boolean;
+      return (
+        <Badge variant={isVisible ? "success" : "destructive"}>
+          {isVisible ? "Visible" : "Hidden"}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "price",
@@ -108,6 +125,15 @@ export const collectionColumns: ColumnDef<Product>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ getValue }) => {
+      const status = getValue() as string;
+      const isVisible = status === "ACTIVE";
+      return (
+        <Badge variant={isVisible ? "success" : "destructive"}>
+          {isVisible ? "Visible" : "Hidden"}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "products",
@@ -157,6 +183,15 @@ export const brandColumns: ColumnDef<Product>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ getValue }) => {
+      const status = getValue() as string;
+      const isVisible = status === "ACTIVE";
+      return (
+        <Badge variant={isVisible ? "success" : "destructive"}>
+          {isVisible ? "Visible" : "Hidden"}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "products",

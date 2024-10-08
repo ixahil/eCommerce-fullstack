@@ -44,7 +44,7 @@ export const loginFormControls = [
   },
 ];
 
-export const addBrandFormControls: CollectionFormGroup[] = [
+export const brandFormControls: CollectionFormGroup[] = [
   {
     groupId: 1,
     children: [
@@ -148,7 +148,7 @@ export type CollectionFormGroup = {
   }>;
 };
 
-export const addCollectionFormControls: CollectionFormGroup[] = [
+export const collectionFormControls: CollectionFormGroup[] = [
   {
     groupId: 1,
     children: [
@@ -251,8 +251,31 @@ export type AddProductFormGroup = {
     items: AddProductFormItem[];
   }>;
 };
+export type CommonFormGroup = {
+  groupId: number;
+  children: Array<{
+    groupLabel: string;
+    items: CommonFormItem[];
+  }>;
+};
 
-export const addProductFormControls: AddProductFormGroup[] = [
+export type CommonFormItem = {
+  label: string;
+  name: string;
+  componentType: "input" | "textarea" | "select" | "number" | "media" | "blank";
+  type: string;
+  required: boolean;
+  placeholder: string;
+  defaultValue?: string;
+  options?: Array<{ handle: string; label: string }> | [];
+  disabled?: boolean;
+  min?: number;
+  step?: number;
+  default?: number;
+  multiple?: boolean;
+};
+
+export const productFormControls: AddProductFormGroup[] = [
   {
     groupId: 1,
     children: [
@@ -425,6 +448,59 @@ export const addProductFormControls: AddProductFormGroup[] = [
               { handle: "home", label: "Home & Garden" },
             ],
             placeholder: "Select the product collection",
+          },
+        ],
+      },
+    ],
+  },
+];
+
+export const menuFormControls: CommonFormGroup[] = [
+  {
+    groupId: 1,
+    children: [
+      {
+        groupLabel: "Basic Info",
+        items: [
+          {
+            label: "Name",
+            name: "name",
+            componentType: "input",
+            type: "text",
+            required: true,
+            placeholder: "Enter the collection name",
+          },
+        ],
+      },
+      {
+        groupLabel: "Menu Items",
+        items: [
+          {
+            label: "Menu Items",
+            name: "menuItems",
+            componentType: "blank",
+            type: "text",
+            required: true,
+            placeholder: "Enter the Menu Items",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupId: 2,
+    children: [
+      {
+        groupLabel: "Handle",
+        items: [
+          {
+            label: "Handle",
+            name: "handle",
+            componentType: "input",
+            type: "text",
+            required: true,
+            placeholder: "Enter the URL Handle",
+            disabled: true,
           },
         ],
       },

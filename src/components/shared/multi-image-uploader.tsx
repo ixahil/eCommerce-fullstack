@@ -17,6 +17,7 @@ const MultiImageUploader = ({
 }) => {
   const { setValue, getValues, formState } = useFormContext();
   const initialValues = getValues(name);
+  const [removedFiles, setRemovedFiles] = useState<string[]>([]);
 
   const [localFiles, setLocalFiles] = useState<(File | string)[]>(
     Array.isArray(initialValues)
@@ -42,6 +43,12 @@ const MultiImageUploader = ({
     const updatedFiles = localFiles.filter((f) => f !== file);
     setLocalFiles(updatedFiles);
     setValue(name, updatedFiles);
+
+    if (typeof file === "string") {
+      setRemovedFiles((prevRemovedFiles) => [...prevRemovedFiles, file]);
+
+      setValue("removedImages", [...removedFiles, file]);
+    }
   };
 
   const handleEdit = (index: number) => {
@@ -54,9 +61,14 @@ const MultiImageUploader = ({
       const index = Number(e.target.getAttribute("data-index"));
       const newFile = e.target.files[0];
       const updatedFiles = [...localFiles];
+      const oldFile = updatedFiles[index];
       updatedFiles[index] = newFile; // Update with new file
       setLocalFiles(updatedFiles);
       setValue(name, updatedFiles); // Update form state
+      if (typeof oldFile === "string") {
+        setRemovedFiles((prevRemovedFiles) => [...prevRemovedFiles, oldFile]);
+        setValue("removedImages", [...removedFiles, oldFile]);
+      }
     }
   };
 

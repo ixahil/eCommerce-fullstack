@@ -2,7 +2,7 @@
 import CommonForm from "@/components/admin/forms/common-form";
 import AddPageLayout from "@/components/admin/layouts/add-page-layout";
 import { Form } from "@/components/ui/form";
-import { menuFormControls } from "@/config/form/forms-data";
+import { brandFormControls } from "@/config/form/forms-data";
 import { useAddBrandMutation } from "@/store/api/brand-api";
 import { submitHandler } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,7 @@ const formSchema = z.object({
 
 export type FormFields = z.infer<typeof formSchema>;
 
-const AddMenu = () => {
+const AddBrand = () => {
   const router = useRouter();
   const [addBrandMutation] = useAddBrandMutation();
 
@@ -58,12 +58,12 @@ const AddMenu = () => {
   };
 
   return (
-    <AddPageLayout title="Add menu" pathname="/products/menu/new">
+    <AddPageLayout title="Add Brand" pathname="/products/brands/new">
       <Form {...form}>
-        <CommonForm onSubmit={onSubmit} formControls={menuFormControls} />
+        <CommonForm onSubmit={onSubmit} formControls={brandFormControls} />
       </Form>
     </AddPageLayout>
   );
 };
 
-export default AddMenu;
+export default AddBrand;

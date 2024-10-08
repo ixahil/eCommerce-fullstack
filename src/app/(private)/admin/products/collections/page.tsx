@@ -11,7 +11,7 @@ const AdminCollectionList = () => {
 
   // const { data } = await response.json();
 
-  const { data, isError, isLoading } = useGetCollectionsQuery();
+  const { data, isError, isLoading } = useGetCollectionsQuery({});
 
   return (
     <PageLayout

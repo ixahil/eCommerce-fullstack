@@ -1,8 +1,9 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { AddProductFormItem } from "@/config/form/forms-data";
+import { CommonFormItem } from "@/config/form/forms-data";
 
+import AddMenuGroup from "@/app/(private)/admin/products/new/AddMenuGroup";
 import { FormFields } from "@/components/admin/forms/product-form";
 import MultiImageUploader from "@/components/shared/multi-image-uploader";
 import SingleImageUploader from "@/components/shared/single-image-uploader";
@@ -23,7 +24,7 @@ import {
 import { useFormContext } from "react-hook-form";
 
 type FormElemRendererProps = {
-  elem: AddProductFormItem;
+  elem: CommonFormItem;
 };
 
 export const FormElemRenderer = ({ elem }: FormElemRendererProps) => {
@@ -174,5 +175,10 @@ export const FormElemRenderer = ({ elem }: FormElemRendererProps) => {
       ) : (
         <SingleImageUploader name={name} label={label} required={required} />
       );
+    case "blank":
+      switch (name) {
+        case "menuItems":
+          return <AddMenuGroup />;
+      }
   }
 };
