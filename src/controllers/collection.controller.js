@@ -1,6 +1,6 @@
 import { CollectionModel } from "../models/index.js";
 import { asyncHandler } from "../middlewares/index.js";
-import { AppResponse } from "../utils/index.js";
+import { AppError, AppResponse } from "../utils/index.js";
 import { deleteFolder, fileDeleter, fileUploader } from "../lib/cloudinary.js";
 
 export const createCollection = asyncHandler(async (req, res, next) => {
@@ -55,10 +55,14 @@ export const updateCollection = asyncHandler(async (req, res, next) => {
     if (collection.image?.public_id) {
       await fileDeleter(collection.image);
     }
-    image = await fileUploader(files, handle, `collections/${handle}`);
-  } else if (prevImage) {
-    image = collection.image;
+    const uploadResults = await fileUploader(
+      files,
+      handle,
+      `collections/${handle}`
+    );
+    image = uploadResults[0];
   } else {
+    if (prevImage) image = collection.image;
     await fileDeleter(collection.image);
   }
 

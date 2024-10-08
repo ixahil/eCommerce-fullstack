@@ -17,19 +17,14 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     stock,
     isFreeShipping,
     isFeatured,
-    isVisible,
   } = req.body;
 
-  const images = req.files?.images;
+  const isVisible = status === "ACTIVE";
 
   const collections = await CollectionModel.findOrCreate(candidateCollections);
   const brand = await BrandModel.findOrCreate(candidateBrand);
 
-  let uploadResults = [];
-
-  if (images) {
-    uploadResults = await fileUploader(images, sku, `products/${sku}`);
-  }
+  const images = await handleNewImages(req.files?.images, sku);
 
   const product = await ProductModel.create({
     sku,
@@ -43,7 +38,7 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     isFeatured,
     status,
     isVisible,
-    images: uploadResults,
+    images: images,
   });
 
   // Assign collections and brand to product also add product in collection and brand
@@ -74,14 +69,11 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
     stock,
     isFreeShipping,
     isFeatured,
-    isVisible,
+    removedImages,
   } = req.body;
 
   const { id } = req.params;
-
-  const prevImages = req.body?.prevImages
-    ? JSON.parse(req.body.prevImages)
-    : [];
+  const isVisible = status === "ACTIVE";
 
   const product = await ProductModel.findByIdAndUpdate(id, {
     sku,
@@ -95,28 +87,22 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
     isFeatured,
     isVisible,
     status,
-    images: prevImages,
-  }); // Option to return the updated product
+  });
 
   if (!product) {
     throw new AppError(404, "Product not found");
   }
 
-  const deletedImages = product.images.filter(
-    (img) =>
-      !prevImages.some(
-        (prevImg) => prevImg._id.toString() === img._id.toString()
-      )
-  );
-
-  if (deletedImages.length > 0) {
-    await fileDeleter(deletedImages);
+  // Handle removed images
+  if (removedImages) {
+    product.images =
+      (await handleRemovedImages(product.images, removedImages)) || [];
   }
 
-  const images = req.files?.images;
-  if (images) {
-    const uploadResults = await fileUploader(images, sku, `products/${sku}`);
-    product.images = [...product.images, ...uploadResults];
+  // Handle new images upload
+  const newImages = await handleNewImages(req.files?.images, sku);
+  if (newImages) {
+    product.images.push(...newImages);
   }
 
   // Use statics for collection and brand
@@ -162,3 +148,41 @@ export const deleteProduct = asyncHandler(async (req, res, next) => {
     .status(200)
     .json(new AppResponse(200, null, "Product Deleted Successfully"));
 });
+
+// utility functions
+
+const handleRemovedImages = async (images, removedImages) => {
+  if (removedImages) {
+    const validRemovedImages = Array.isArray(removedImages)
+      ? removedImages
+      : [removedImages];
+
+    const removedImagesObjs = images.filter((image) =>
+      validRemovedImages.some(
+        (removeImage) =>
+          image.url === removeImage.url || image.url === removeImage
+      )
+    );
+
+    const productImages = images.filter(
+      (image) =>
+        !validRemovedImages.some(
+          (removeImage) =>
+            image.url === removeImage.url || image.url === removeImage
+        )
+    );
+
+    if (removedImagesObjs.length > 0) {
+      await fileDeleter(removedImagesObjs);
+    }
+
+    return productImages;
+  }
+};
+
+const handleNewImages = async (images, dir) => {
+  if (images) {
+    const uploadResults = await fileUploader(images, dir, `products/${dir}`);
+    return uploadResults;
+  }
+};

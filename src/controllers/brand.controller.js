@@ -1,6 +1,6 @@
 import { BrandModel } from "../models/index.js";
 import { asyncHandler } from "../middlewares/index.js";
-import { AppResponse } from "../utils/index.js";
+import { AppError, AppResponse } from "../utils/index.js";
 import { fileUploader, fileDeleter, deleteFolder } from "../lib/cloudinary.js";
 
 export const createBrand = asyncHandler(async (req, res, next) => {
