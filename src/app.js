@@ -8,6 +8,7 @@ import {
   collectionRouter,
   productRouter,
   userRouter,
+  menuRouter,
 } from "./routes/index.js";
 import fileUpload from "express-fileupload";
 import { swaggerSpec } from "./swagger.js";
@@ -41,5 +42,6 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/brands", brandRouter);
 app.use("/api/v1/collections", collectionRouter);
+app.use("/api/v1/store", menuRouter);
 
 app.use(errorHandler);

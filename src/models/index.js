@@ -6,3 +6,4 @@ export * from "./order.model.js";
 export * from "./product.model.js";
 export * from "./brand.model.js";
 export * from "./collection.model.js";
+export * from "./navigationMenu.model.js";
