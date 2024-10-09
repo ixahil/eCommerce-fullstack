@@ -34,17 +34,17 @@ export const menuApi = createApi({
     CustomizedFetchBaseQueryError,
     object
   >,
-  tagTypes: ["products", "product"],
+  tagTypes: ["menus", "menu"],
   endpoints: (builder) => ({
-    getProduct: builder.query({
+    getMenu: builder.query({
       query: ({ id }) => `/${id}`,
       transformErrorResponse: errorHandler,
       transformResponse: responseHandler,
       providesTags: ({ data }) => [
-        data ? { type: "product", id: data._id } : { type: "product", id: 0 },
+        data ? { type: "menu", id: data._id } : { type: "menu", id: 0 },
       ],
     }),
-    getProducts: builder.query({
+    getMenus: builder.query({
       query: () => "",
       transformResponse: responseHandler,
       transformErrorResponse: errorHandler,
@@ -52,12 +52,12 @@ export const menuApi = createApi({
         data
           ? [
               ...data.map(({ _id }) => ({
-                type: "product" as const,
+                type: "menu" as const,
                 id: _id,
               })),
-              "products",
+              "menus",
             ]
-          : ["products"],
+          : ["menus"],
     }),
     addMenu: builder.mutation({
       query: ({ payload }) => ({
@@ -68,10 +68,10 @@ export const menuApi = createApi({
       transformResponse: responseHandler,
       transformErrorResponse: errorHandler,
       providesTags: ({ data }) => [
-        data ? { type: "product", id: data._id } : { type: "product", id: 0 },
+        data ? { type: "menu", id: data._id } : { type: "menu", id: 0 },
       ],
     }),
-    updateProduct: builder.mutation({
+    updateMenu: builder.mutation({
       query: ({ id, payload }) => ({
         url: `/${id}`,
         method: "POST",
@@ -79,27 +79,27 @@ export const menuApi = createApi({
       }),
       transformErrorResponse: errorHandler,
       transformResponse: responseHandlerToast,
-      invalidatesTags: ({ data }) => [{ type: "product", id: data._id }],
+      invalidatesTags: ({ data }) => [{ type: "menu", id: data._id }],
     }),
 
-    deleteProduct: builder.mutation({
+    deleteMenu: builder.mutation({
       query: ({ id }) => ({
         url: `/${id}`,
         method: "DELETE",
       }),
       transformErrorResponse: errorHandler,
       transformResponse: responseHandlerToast,
-      invalidatesTags: ["products"],
+      invalidatesTags: ["menus"],
     }),
   }),
 });
 
 export const {
-  useGetProductsQuery,
-  useUpdateProductMutation,
+  useGetMenusQuery,
+  useUpdateMenuMutation,
   useAddMenuMutation,
-  useDeleteProductMutation,
-  useGetProductQuery,
+  useDeleteMenuMutation,
+  useGetMenuQuery,
 } = menuApi;
 
 export default menuApi;

@@ -8,6 +8,7 @@ import collectionApi from "./api/collection-api";
 import brandApi from "./api/brand-api";
 import sidebarSlice from "./slice/sidebar-slice";
 import menuApi from "./api/menu-api";
+import siteConfig from "./api/storeConfig-api";
 
 const makeStore = () =>
   configureStore({
@@ -21,6 +22,7 @@ const makeStore = () =>
       [brandApi.reducerPath]: brandApi.reducer,
       [sidebarSlice.reducerPath]: sidebarSlice.reducer,
       [menuApi.reducerPath]: menuApi.reducer,
+      [siteConfig.reducerPath]: siteConfig.reducer,
     },
     middleware: (getDefaultMiddleware) => {
       return getDefaultMiddleware()
@@ -29,7 +31,8 @@ const makeStore = () =>
         .concat(userApi.middleware)
         .concat(collectionApi.middleware)
         .concat(brandApi.middleware)
-        .concat(menuApi.middleware);
+        .concat(menuApi.middleware)
+        .concat(siteConfig.middleware);
     },
   });
 

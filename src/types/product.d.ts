@@ -25,6 +25,19 @@ interface Brand {
   __v: number;
 }
 
+type MenuItem = {
+  label: string;
+  handle: string;
+  children?: MenuItem[];
+};
+
+export type Menu = {
+  _id: string;
+  name: string;
+  handle: string;
+  menu: MenuItem[];
+};
+
 interface Image {
   public_id: string;
   url: string;

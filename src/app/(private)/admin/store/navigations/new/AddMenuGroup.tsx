@@ -7,8 +7,8 @@ import AddMenuItem from "./AddMenuItem";
 import { MinimalViable } from "@/components/shared/sortable-tree";
 
 const AddMenuGroup = () => {
-  const [menu, setMenu] = useState([]);
   const { formState, setValue, getValues } = useFormContext();
+  const [menu, setMenu] = useState(getValues("menu"));
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {

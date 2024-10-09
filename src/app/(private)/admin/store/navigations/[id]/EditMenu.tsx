@@ -1,14 +1,11 @@
 "use client";
 import CommonForm from "@/components/admin/forms/common-form";
-import AddPageLayout from "@/components/admin/layouts/add-page-layout";
 import { Form } from "@/components/ui/form";
 import { menuFormControls } from "@/config/form/forms-data";
-import { useAddBrandMutation } from "@/store/api/brand-api";
-import { useAddMenuMutation } from "@/store/api/menu-api";
+import { useUpdateBrandMutation } from "@/store/api/brand-api";
 import { submitHandler } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -33,34 +30,29 @@ const formSchema = z.object({
 });
 export type FormFields = z.infer<typeof formSchema>;
 
-const AddMenu = () => {
+const EditMenu = ({ data }: { data: FormFields }) => {
+  console.log(data);
+  const params = useParams();
   const router = useRouter();
 
-  const [addMenuMutate] = useAddMenuMutation();
+  const [updateBrandMutation] = useUpdateBrandMutation();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      handle: "",
-      menu: [],
+      name: data?.name || "",
+      handle: data?.handle || "",
+      menu: data?.menu || [],
     },
   });
 
-  const name = form.watch("name");
-
-  useEffect(() => {
-    form.setValue("handle", name.toLowerCase().replace(/\s/g, "-"));
-  }, [name, form]);
-
+  // Handle form submission
   const onSubmit = async (values: FieldValues) => {
-    console.log(values);
     const { success, error } = await submitHandler(
       values,
-      addMenuMutate,
+      updateBrandMutation,
       form.setError,
-      null,
-      false
+      params.id as string
     );
 
     if (success) {
@@ -69,14 +61,11 @@ const AddMenu = () => {
       console.error("Submission failed:", error);
     }
   };
-
   return (
-    <AddPageLayout title="Add menu" pathname="/products/menu/new">
-      <Form {...form}>
-        <CommonForm onSubmit={onSubmit} formControls={menuFormControls} />
-      </Form>
-    </AddPageLayout>
+    <Form {...form}>
+      <CommonForm onSubmit={onSubmit} formControls={menuFormControls} />
+    </Form>
   );
 };
 
-export default AddMenu;
+export default EditMenu;

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/store/hooks";
 import { selectSidebar } from "@/store/slice/sidebar-slice";
 import React from "react";
+import { ThemeProviderAdmin } from "../theme-provider-admin";
 
 type Props = {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ const AdminLayout = (props: Props) => {
   const { isOpen } = useAppSelector(selectSidebar);
 
   return (
-    <>
+    <ThemeProviderAdmin attribute="class" defaultTheme="dark" enableSystem>
       <Sidebar />
       <main
         className={cn(
@@ -40,7 +41,7 @@ const AdminLayout = (props: Props) => {
           Footer
         </div>
       </footer>
-    </>
+    </ThemeProviderAdmin>
   );
 };
 

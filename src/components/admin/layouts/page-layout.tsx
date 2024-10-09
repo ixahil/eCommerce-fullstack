@@ -4,21 +4,21 @@ import BreadCrumbCustom from "@/components/shared/breadcrumb-custom";
 
 type Props = {
   children: React.ReactNode;
-  title: string;
+  title?: string;
   search: boolean;
-  button: {
+  button?: {
     label: string;
     href: string;
   };
-  pathname: string;
+  pathname?: string;
 };
 
 const PageLayout = ({ children, button, search, title, pathname }: Props) => {
   return (
     <div className="space-y-8">
-      <BreadCrumbCustom pathname={pathname} />
+      {pathname && <BreadCrumbCustom pathname={pathname} />}
       <h2 className="text-xl font-medium">{title}</h2>
-      <TopBar button={button} search={search} />
+      {button && <TopBar button={button} search={search} />}
       {children}
     </div>
   );

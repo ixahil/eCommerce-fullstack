@@ -211,3 +211,23 @@ export const brandColumns: ColumnDef<Product>[] = [
     },
   },
 ];
+
+export const menuColumns: ColumnDef<Product>[] = [
+  {
+    accessorKey: "handle",
+    header: "Handle",
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const product = row.original;
+
+      return <RowAction item={product} actionType="brand" />;
+    },
+  },
+];
