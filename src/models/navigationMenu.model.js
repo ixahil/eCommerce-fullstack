@@ -10,7 +10,31 @@ const MenuItem = new Schema({
     type: String,
     required: true,
   },
-  children: [],
+  depth: {
+    type: Number,
+  },
+  parentId: {
+    type: String,
+    default: null,
+  },
+  id: {
+    type: String,
+  },
+  index: {
+    type: Number,
+  },
+  isLast: {
+    type: Boolean,
+    default: false,
+  },
+  parent: {
+    type: String,
+    default: null,
+  },
+});
+
+MenuItem.add({
+  children: [MenuItem],
 });
 
 const NavigationMenu = new Schema(
@@ -28,6 +52,10 @@ const NavigationMenu = new Schema(
       required: true,
     },
     menu: [MenuItem],
+    isDefault: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

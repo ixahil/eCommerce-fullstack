@@ -4,3 +4,4 @@ export * from "./product.routes.js";
 export * from "./brand.routes.js";
 export * from "./collection.routes.js";
 export * from "./menu.routes.js";
+export * from "./siteConfig.routes.js";

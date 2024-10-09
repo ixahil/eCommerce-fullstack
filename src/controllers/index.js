@@ -4,3 +4,4 @@ export * from "./product.controller.js";
 export * from "./collection.controller.js";
 export * from "./brand.controller.js";
 export * from "./menu.controller.js";
+export * from "./siteConfig.controller.js";
